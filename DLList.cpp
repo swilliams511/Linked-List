@@ -3,7 +3,7 @@
 #include <cassert>
 #include <iostream>
 
-DLList::DLList()
+DLList::DLList() //default constructor
 {
     listName = "";
     head = nullptr;
@@ -11,7 +11,7 @@ DLList::DLList()
     numNodes = 0;
 }
 
-DLList::DLList(std::string name)
+DLList::DLList(std::string name) //parameterized constructor
 {
     listName = name;
     head = nullptr;
@@ -20,7 +20,7 @@ DLList::DLList(std::string name)
 }
 
 
-DLList::~DLList()
+DLList::~DLList() //destructor
 {
     while(numNodes > 0) //numNodes is managed by the delete functions
         delete_back();  //the last node in the list is removed til there are no more nodes
@@ -275,7 +275,7 @@ bool DLList::delete_node(int value, std::string name)
     return true;
 }
 
-Node* DLList::getKthNode(int k)
+Node* DLList::getKthNode(int k) //similar to ->at(n) with vector
 {
     if(k > numNodes)
     {
