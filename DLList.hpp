@@ -39,6 +39,7 @@ public:
     bool isListSorted();
     void reverse(); //trivial since you can start at tail and get prev til nullptr
     void print();
+    int size();
     //getters/setters
     Node* getHead() {return head;}
     void setHead(Node* v) {head = v;}

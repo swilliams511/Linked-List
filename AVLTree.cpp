@@ -8,10 +8,8 @@ AVLTree::AVLTree()
 
 AVLTree::~AVLTree()
 {
-    ///recursively deletes all nodes in the tree
-    ///base case would be if the node has no children (they are both nullptrs)
-    ///then delete the node, and update the parent node that points to it to
-    ///point to a nullptr
+    std::cout << "***start of AVLTree destructor***\n";
+    delete root;
 }
 
 
@@ -99,20 +97,22 @@ TreeNode* AVLTree::balance(TreeNode* node)  //O(1)
     return node;   //no balancing is needed
 }
 
-TreeNode* AVLTree::insert(Node* node)
+bool AVLTree::insert(Node* node)
 {
+    if(isMember(node->getValue())) //if the node is already in the tree
+        return false;              //say it wasnt inserted
     if(root == nullptr) //if the tree is empty
     {
         TreeNode* newNode = new TreeNode(node); //make a new treenode
         root = newNode;    //say that it is the root of the tree
-        return newNode;    //return it
+        return true;    //say the node was inserted
     }
     if(node->getValue() < root->getDataNode()->getValue()) //if the passed nodes value is less than the roots value
         root->setLeft(insert(root->getLeft(),node)); //recursive call left, root's left is set since rotations may occur while balancing
     else
         root->setRight(insert(root->getRight(),node));//recursive call right
-    return balance(root); //should the root be updated during balance, the rotate left/right functions will take care of that
-
+    balance(root); //should the root be updated during balance, the rotate left/right functions will take care of that
+    return true; //say the node was inserted
 }
 //recursive helper function for insert
 TreeNode* AVLTree::insert(TreeNode* topNode, Node* node)
@@ -129,11 +129,30 @@ TreeNode* AVLTree::insert(TreeNode* topNode, Node* node)
     return balance(topNode);
 }
 
-///TODO : for root insert check if the node is already in the tree
-///thus, lookup needs to be written
+bool AVLTree::isMember(int value)
+{
+    if(root == nullptr) //if the tree is empty
+        return false; //then the value cant be in there
+    if(root->getDataNode()->getValue() == value) //if the roots value is equal to the passed value
+        return true;                             //the node is in the tree
+    if(value < root->getDataNode()->getValue())  //if its smaller than the root value
+        return isMember(root->getLeft(),value);  //go left
+    return isMember(root->getRight(),value);     //else go right
+}
 
-
-
+//recursive helper function for isMember. Same behavior has public function, where node is the root of a subtree
+bool AVLTree::isMember(TreeNode* node, int value)
+{
+    //base cases
+    if(node == nullptr)
+        return false;
+    if(node->getDataNode()->getValue() == value)
+        return true;
+    //recursive calls
+    if(value < node->getDataNode()->getValue())
+        return isMember(node->getLeft(),value);
+    return isMember(node->getRight(),value);
+}
 
 
 
@@ -146,13 +165,13 @@ void AVLTree::print()
           std::cout << "The AVLTree is empty\n";
           return;         //stop printing
       }
-
+    //making sure rotate function do their job updating the root when needed
     std::cout << "Root is (" << root->getDataNode()->getValue() << "," << root->getDataNode()->getName() << ")\n";
 
     std::queue<TreeNode*> curr;  //queue for holding the nodes at the current level
     std::queue<TreeNode*> next;  //queue for holding the nodes at the next level
-    curr.push(root);             //add the root to the queue and say we are at level 1
-    int counter = 1;
+    curr.push(root);             //add the root to the queue
+    int counter = 1;             //say we are at level 1
 
     std::cout << "Level " << counter << ": ";
 
@@ -170,8 +189,12 @@ void AVLTree::print()
             if(node->getRight() != nullptr)
                 next.push(node->getRight()); //store the non null right node in the queue
         }
-    if (curr.empty() == true && next.empty() == true) //when both queues are empty all the nodes have been printed
-        return;                                       //exit the function
+    if (curr.empty() == true && next.empty() == true)
+    {
+        std::cout << "\n\n"; //when both queues are empty all the nodes have been printed
+        return;
+    }
+                                   //exit the function
     std::queue<TreeNode*> temp = curr;    //temp queue for swapping the other two queues
     curr = next;
     next = temp;

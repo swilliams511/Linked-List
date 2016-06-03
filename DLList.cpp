@@ -76,7 +76,7 @@ void DLList::insert_from_file(std::string fileName)
     {
 
         std::getline(stream,pkmnName);
-        insert_back(atoi(pkmnNum.c_str()),pkmnName);
+        insert_back(atoi(pkmnNum.c_str()),pkmnName); //atoi turns the read string number into an int. needs to be in c str form
     }
     stream.close();
 }
@@ -483,5 +483,15 @@ void DLList::reverse()
     tail = temp; //makes the tail where the head was
 }
 
-
+int DLList::size() //simply for testing if numNodes managed by insert/delete
+{                  //is doing its job
+    int counter = 0;
+    Node* node = head;
+    while(node != nullptr)
+    {
+        node = node->getNext();
+        counter++;
+    }
+    return counter;
+}
 

@@ -9,6 +9,7 @@ public:
     //from there, it can then be put into a binary search tree
     //or an AVL tree
     TreeNode(Node* node);
+    ~TreeNode();
 
     TreeNode* getLeft() {return leftSubtree;}
     TreeNode* getRight() {return rightSubtree;}

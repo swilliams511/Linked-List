@@ -8,11 +8,12 @@ public:
     AVLTree();
     ~AVLTree();
 
-    TreeNode* insert(Node* node);
+    bool insert(Node* node);
 
     TreeNode* getRoot() {return root;}
     void setRoot(TreeNode* node) {root = node;}
     void print();
+    bool isMember(int value);
 
 
 private:
@@ -26,6 +27,7 @@ private:
     TreeNode* rotateLeft(TreeNode* node);
     TreeNode* balance(TreeNode* node);
     TreeNode* insert(TreeNode* topNode, Node* node);
+    bool isMember(TreeNode* node, int value);
 
 
 };
