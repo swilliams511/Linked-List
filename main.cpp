@@ -99,16 +99,24 @@ int main()
     tree->insert(List->getKthNode(13));
     tree->insert(List->getKthNode(14));
     tree->insert(List->getKthNode(15));
+    tree->insert(List->getKthNode(16));
+    tree->insert(List->getKthNode(17));
     std::cout << tree->insert(List->getKthNode(15)) << "\n\n"; //multiple insertion test
     tree->print();
     std::cout << tree->isMember(152) << "\n";
     std::cout << tree->isMember(151) << "\n";
 
+    tree->remove(24);
+    tree->print();
+    AVLTree* newTree = tree->copy();
+    newTree->print();
 
+    delete newTree;
     delete tree;
     delete pokeList;
     delete List;
     delete newList;
+
 
     return 0;
 }

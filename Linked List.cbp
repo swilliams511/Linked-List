@@ -36,6 +36,8 @@
 		<Unit filename="AVLTree.hpp" />
 		<Unit filename="DLList.cpp" />
 		<Unit filename="DLList.hpp" />
+		<Unit filename="HashTable.cpp" />
+		<Unit filename="HashTable.hpp" />
 		<Unit filename="Node.cpp" />
 		<Unit filename="Node.hpp" />
 		<Unit filename="TreeNode.cpp" />

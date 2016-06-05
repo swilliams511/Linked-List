@@ -1,19 +1,46 @@
+/* By: Scott Williams
+several functions reference the logic on this page: http://kukuruku.co/hub/cpp/avl-trees
+*/
+
 #include "AVLTree.hpp"
 #include <queue>
 
 AVLTree::AVLTree()
 {
     root = nullptr;
+    numNodes = 0;
 }
 
 AVLTree::~AVLTree()
 {
     std::cout << "***start of AVLTree destructor***\n";
-    delete root;
+    delete root; //this will recursivly delete all nodes in the tree
+}
+
+//makes a new tree with a copy of each of the nodes in the old tree
+//DOESNT guarantee that the structure will be identical like having the same root
+//but all the nodes will be in there and the tree will behave about the same
+AVLTree* AVLTree::copy()
+{
+    AVLTree* tree = new AVLTree(); //creates a new instance of a tree since we want a copy
+    copy(root,tree); //recursivly copies the nodes starting at the root
+    return tree;     //send back the finished tree
+}
+
+AVLTree* AVLTree::copy(TreeNode* node, AVLTree* tree)
+{
+    //base case
+    if(node == nullptr) //if the node isnt there
+        return tree;    //get out
+    tree->insert(node->getDataNode()); //insert the node
+    //recursive calls
+    copy(node->getLeft(),tree); //recursivly insert left and right nodes
+    copy(node->getRight(),tree);
+    return tree; //send the tree back
 }
 
 
-
+//getter function for a specific nodes height that works with nullptrs
 int AVLTree::height(TreeNode* node)
 {
     if(node == nullptr) //if the node (usually a left or right node) is a nullptr
@@ -105,6 +132,7 @@ bool AVLTree::insert(Node* node)
     {
         TreeNode* newNode = new TreeNode(node); //make a new treenode
         root = newNode;    //say that it is the root of the tree
+        numNodes++;
         return true;    //say the node was inserted
     }
     if(node->getValue() < root->getDataNode()->getValue()) //if the passed nodes value is less than the roots value
@@ -119,7 +147,11 @@ TreeNode* AVLTree::insert(TreeNode* topNode, Node* node)
 {
     //base case
     if(topNode == nullptr)
+    {
+        numNodes++;
         return new TreeNode(node);
+    }
+
     //recursive calls
     if(node->getValue() < topNode->getDataNode()->getValue())
         topNode->setLeft(insert(topNode->getLeft(),node));
@@ -165,6 +197,8 @@ void AVLTree::print()
           std::cout << "The AVLTree is empty\n";
           return;         //stop printing
       }
+      else
+        std::cout << "Number of nodes in tree: " << numNodes <<" with height: " << treeHeight() << "\n";
     //making sure rotate function do their job updating the root when needed
     std::cout << "Root is (" << root->getDataNode()->getValue() << "," << root->getDataNode()->getName() << ")\n";
 
@@ -189,18 +223,93 @@ void AVLTree::print()
             if(node->getRight() != nullptr)
                 next.push(node->getRight()); //store the non null right node in the queue
         }
-    if (curr.empty() == true && next.empty() == true)
-    {
-        std::cout << "\n\n"; //when both queues are empty all the nodes have been printed
-        return;
-    }
+        if (curr.empty() == true && next.empty() == true)
+        {
+            std::cout << "\n\n"; //when both queues are empty all the nodes have been printed
+            return;
+        }
                                    //exit the function
-    std::queue<TreeNode*> temp = curr;    //temp queue for swapping the other two queues
-    curr = next;
-    next = temp;
-    counter++;  //move to the next level of the tree
+        std::queue<TreeNode*> temp = curr;    //temp queue for swapping the other two queues
+        curr = next;
+        next = temp;
+        counter++;  //move to the next level of the tree
 
-    std::cout << "\nLevel " << counter << ":";
+        std::cout << "\nLevel " << counter << ": ";
     }
+}
+
+int AVLTree::max(int x, int y) //given two ints, this function returns the larger of the two
+{
+    return x > y ? x : y;
+}
+
+//tree height gets the height of the tree, while the other height function above
+//gets the height of a specific node in the tree
+int AVLTree::treeHeight()
+{
+    if(root == nullptr) //if there is nothing in the tree then it has no height
+        return 0;
+    return 1 + max(treeHeight(root->getLeft()) , treeHeight(root->getRight())); //else it has 1 height to account for root plus the largest child height
+}
+
+//recursive helper function
+int AVLTree::treeHeight(TreeNode* node)
+{
+    if(node == nullptr)
+        return 0;
+    return 1 + max(treeHeight(node->getLeft()) , treeHeight(node->getRight()));
+}
+
+TreeNode* AVLTree::findMin(TreeNode* node)
+{
+    if(node->getLeft() == nullptr) //as far left as possible
+        return node;
+    return findMin(node->getLeft()); //smaller nodes are always left
+}
+
+TreeNode* AVLTree::removeMin(TreeNode* node)
+{
+    if (node->getLeft() == nullptr)
+        return node->getRight();
+    node->setLeft(removeMin(node->getLeft()));
+    return balance(node);
+}
+
+bool AVLTree::remove(int k)
+{
+    if(!isMember(k)) //checks if the node is in the tree, if not
+        return false; //we cant remove it
+    int rootValue = root->getDataNode()->getValue(); //temp var for holding the roots value just incase it is deleted
+    TreeNode* node = remove(root,k); //first recursive call
+    if(rootValue == k) //after the recursion, if the root was the node removed
+        root = node;   //update the root to be the node that took its place ie the min node
+    return true;      //tell us it was removed
+}
+
+//recursive helper function, where we know k is in the tree
+TreeNode* AVLTree::remove(TreeNode* node, int k)
+{
+    //base case
+    if(k == node->getDataNode()->getValue()) //if we are at k
+    {
+        TreeNode* left = node->getLeft();    //temp var for left
+        TreeNode* right = node->getRight();  //temp var for right
+        node->setLeft(nullptr);              //set the node's left to nullptr so destructor doesnt take out extra nodes on accident
+        node->setRight(nullptr);             //set the node's right to nullptr same reason
+        delete node;             //call the destructor
+        numNodes--;                //account for the reduced size
+        if(right == nullptr) //because of the balance property, if there isnt a right node
+            return left;     //we can simply move the left node to where the delete node is
+        TreeNode* min = findMin(right); //otherwise, we look in the right subtree for its smallest node
+        min->setRight(removeMin(right)); //we want to move the min to the node that was removed, so we additionally release the node where the min was
+        min->setLeft(left);              //have the min take the place of the deleted node
+        return balance(min);             //balance it
+    }
+    //recursive calls - if we arent at k
+    if(k < node->getDataNode()->getValue()) //go left if k is smaller than node's value
+        node->setLeft(remove(node->getLeft(),k));
+    else
+        node->setRight(remove(node->getRight(),k)); //go right if k is larger than node's value
+    return balance(node); //make sure node remains balance after returning from recursive calls
 }
 
