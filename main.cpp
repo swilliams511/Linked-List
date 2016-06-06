@@ -2,6 +2,8 @@
 #include "DLList.hpp"
 #include "TreeNode.hpp"
 #include "AVLTree.hpp"
+#include "HashTable.hpp"
+#include "HashTableLP.hpp"
 #include <fstream>
 
 int main()
@@ -110,7 +112,27 @@ int main()
     tree->print();
     AVLTree* newTree = tree->copy();
     newTree->print();
+    for(int k = 1; k < tree->getNumNodes()+1; k++)
+        std::cout << k << "th smallest is: " << tree->kthSmallest(k)->getDataNode()->getName() << "\n";
+    tree->inOrderDump();
 
+    HashTable* table = new HashTable(13);
+    table->insert(List->getKthNode(1));
+    for(int i = 1; i < List->getNumNodes()+1; i++)
+        table->insert(List->getKthNode(i));
+    table->remove(150,"Mewtwo");
+    table->insert(List->getKthNode(2));
+    table->print();
+    std::cout << table->getNode("Mew")->getValue() << "\n";
+    std::cout << table->size() << "\n";
+    table->histogram();
+
+    HashTableLP* tableLP = new HashTableLP(13);
+    tableLP->insert(List->getKthNode(1));
+    tableLP->print();
+
+
+    delete table;
     delete newTree;
     delete tree;
     delete pokeList;

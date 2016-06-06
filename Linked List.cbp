@@ -38,6 +38,8 @@
 		<Unit filename="DLList.hpp" />
 		<Unit filename="HashTable.cpp" />
 		<Unit filename="HashTable.hpp" />
+		<Unit filename="HashTableLP.cpp" />
+		<Unit filename="HashTableLP.hpp" />
 		<Unit filename="Node.cpp" />
 		<Unit filename="Node.hpp" />
 		<Unit filename="TreeNode.cpp" />

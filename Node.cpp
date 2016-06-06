@@ -28,14 +28,14 @@ void Node::print()
     std::cout << "Current node information\n";
     std::cout << "Node name: " << name << "\n";
     std::cout << "Node value: " << value << "\n";
-    if(prev == nullptr)
-        std::cout << "Address for prev is: a nullptr\n";
-    else
-        std::cout << "Address for prev is: " << prev << "\n";
-    if(next == nullptr)
-        std::cout << "Address for next is: a nullptr\n";
-    else
-        std::cout << "Address for next is: " << next << "\n";
+  //  if(prev == nullptr)
+   //     std::cout << "Address for prev is: a nullptr\n";
+   // else
+   //     std::cout << "Address for prev is: " << prev << "\n";
+   // if(next == nullptr)
+   //     std::cout << "Address for next is: a nullptr\n";
+   // else
+    //    std::cout << "Address for next is: " << next << "\n";
 }
 
 void Node::addChild(Node *node)

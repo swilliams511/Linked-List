@@ -13,7 +13,7 @@ AVLTree::AVLTree()
 
 AVLTree::~AVLTree()
 {
-    std::cout << "***start of AVLTree destructor***\n";
+    //std::cout << "***start of AVLTree destructor***\n";
     delete root; //this will recursivly delete all nodes in the tree
 }
 
@@ -27,6 +27,7 @@ AVLTree* AVLTree::copy()
     return tree;     //send back the finished tree
 }
 
+//helper function for copy
 AVLTree* AVLTree::copy(TreeNode* node, AVLTree* tree)
 {
     //base case
@@ -312,4 +313,60 @@ TreeNode* AVLTree::remove(TreeNode* node, int k)
         node->setRight(remove(node->getRight(),k)); //go right if k is larger than node's value
     return balance(node); //make sure node remains balance after returning from recursive calls
 }
+
+TreeNode* AVLTree::kthSmallest(int k)
+{
+    if( k > numNodes || k < 1)
+    {
+        std::cout << "Error, " << k << " is not between 1 and " << numNodes << " inclusive\n";
+        exit(2);
+    }
+    return kthSmallest(k, root);
+}
+
+//recursive helper function
+TreeNode* AVLTree::kthSmallest(int k, TreeNode* node)
+{
+    int numNodesLeft = size(node->getLeft());  //gets the amount of nodes in the left subtree
+    if(numNodesLeft == k-1) //if the number of nodes in the left subtree is equal to the k value minus 1
+        return node;        //then we are at the node we want
+    if (numNodesLeft >= k)
+        return kthSmallest(k,node->getLeft()); //go left, leave k alone
+    return kthSmallest(k - numNodesLeft - 1,node->getRight()); //go right, subtract nodes in left subtree since we arent looking at those and -1 since the node wer'e at isnt it
+}
+
+int AVLTree::size()
+{
+    return size(root);
+}
+
+//recursive helper function
+int AVLTree::size(TreeNode* node)
+{
+    if(node == nullptr)
+        return 0;
+    return 1 + size(node->getLeft()) + size(node->getRight());
+}
+
+void AVLTree::inOrderDump()
+{
+    inOrderDump(root);
+    std::cout << "\n\n";
+}
+
+//recursive helper function
+void AVLTree::inOrderDump(TreeNode* node)
+{
+    //base case
+    if(node == nullptr)
+        return;
+    //recursive calls
+    inOrderDump(node->getLeft());
+    std::cout << node->getDataNode()->getName() << " ";
+    inOrderDump(node->getRight());
+}
+
+
+
+
 

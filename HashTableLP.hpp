@@ -1,11 +1,12 @@
-#ifndef _HT
-#define _HT
+#ifndef _HTLP
+#define _HTLP
+
 #include "DLList.hpp"
 
-class HashTable{
+class HashTableLP{
 public:
-    HashTable(int v);
-    ~HashTable();
+    HashTableLP(int v);
+    ~HashTableLP();
 
     bool insert(Node* node);
     bool remove(int value, std::string name);
@@ -17,13 +18,19 @@ public:
     int getLength() {return length;}
     int getNumElements() {return numElements;}
     int size();
-
+    bool isMember(std::string name);
 
 private:
-    DLList* array; //pointer to an array of linked lists
+    Node** array; //pointer to an array of nodes
     int length;
     int numElements;
     int hash(std::string itemKey);
+
+
+
+
+
+
 
 
 };
@@ -33,4 +40,7 @@ private:
 
 
 
-#endif // _HT
+
+
+
+#endif // _HTLP

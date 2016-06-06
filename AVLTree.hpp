@@ -8,10 +8,12 @@ public:
     AVLTree();
     ~AVLTree();
     AVLTree* copy();
+    int size();
 
     bool insert(Node* node);
     bool remove(int k);
     int treeHeight();
+    TreeNode* kthSmallest(int k);
 
     TreeNode* getRoot() {return root;}
     void setRoot(TreeNode* node) {root = node;}
@@ -19,6 +21,7 @@ public:
     void setNumNodes(int v) {numNodes = v;}
 
     void print();
+    void inOrderDump();
     bool isMember(int value);
 
 
@@ -41,6 +44,9 @@ private:
     TreeNode* findMin(TreeNode* node);
     TreeNode* removeMin(TreeNode* node);
     TreeNode* remove(TreeNode* node, int k);
+    TreeNode* kthSmallest(int k, TreeNode* node);
+    int size(TreeNode* node);
+    void inOrderDump(TreeNode* node);
 
 
 };

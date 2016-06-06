@@ -22,6 +22,7 @@ DLList::DLList(std::string name) //parameterized constructor
 
 DLList::~DLList() //destructor
 {
+    //std::cout << "In dllist destr\n";
     while(numNodes > 0) //numNodes is managed by the delete functions
         delete_back();  //the last node in the list is removed til there are no more nodes
 }

@@ -1,9 +1,11 @@
 # depslib dependency file v1.0
-1465097468 source:c:\users\scott williams\desktop\linked list\main.cpp
+1465194100 source:c:\users\scott williams\desktop\linked list\main.cpp
 	"Node.hpp"
 	"DLList.hpp"
 	"TreeNode.hpp"
 	"AVLTree.hpp"
+	"HashTable.hpp"
+	"HashTableLP.hpp"
 	<fstream>
 
 1464305153 c:\users\scott williams\desktop\linked list\node.hpp
@@ -12,7 +14,7 @@
 	<string>
 	<vector>
 
-1464900491 source:c:\users\scott williams\desktop\linked list\dllist.cpp
+1465186762 source:c:\users\scott williams\desktop\linked list\dllist.cpp
 	"DLList.hpp"
 	<fstream>
 	<cassert>
@@ -24,22 +26,28 @@
 1464305153 source:c:\users\scott williams\desktop\linked list\node.cpp
 	"Node.hpp"
 
-1464926715 source:c:\users\scott williams\desktop\linked list\treenode.cpp
+1465104878 source:c:\users\scott williams\desktop\linked list\treenode.cpp
 	"TreeNode.hpp"
 
 1464920131 c:\users\scott williams\desktop\linked list\treenode.hpp
 	"Node.hpp"
 
-1465097408 source:c:\users\scott williams\desktop\linked list\avltree.cpp
+1465187232 source:c:\users\scott williams\desktop\linked list\avltree.cpp
 	"AVLTree.hpp"
 	<queue>
 
-1465097393 c:\users\scott williams\desktop\linked list\avltree.hpp
+1465104878 c:\users\scott williams\desktop\linked list\avltree.hpp
 	"TreeNode.hpp"
 
-1465096833 source:c:\users\scott williams\desktop\linked list\hashtable.cpp
+1465192549 source:c:\users\scott williams\desktop\linked list\hashtable.cpp
 	"HashTable.hpp"
 
-1465096833 c:\users\scott williams\desktop\linked list\hashtable.hpp
+1465192549 c:\users\scott williams\desktop\linked list\hashtable.hpp
+	"DLList.hpp"
+
+1465194160 source:c:\users\scott williams\desktop\linked list\hashtablelp.cpp
+	"HashTableLP.hpp"
+
+1465193676 c:\users\scott williams\desktop\linked list\hashtablelp.hpp
 	"DLList.hpp"
 
