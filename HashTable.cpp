@@ -3,6 +3,7 @@
 //creates a chain based hash table
 HashTable::HashTable(int v)
 {
+    numElements = 0;
     if( v <= 0)
         v = 23;     //some default prime number length
     length = v;
@@ -35,9 +36,10 @@ bool HashTable::insert(Node* node)
 
 }
 
-bool HashTable::remove(int value, std::string name)
+bool HashTable::remove(std::string name)
 {
     int index = hash(name);
+    int value = array[index].getNode(name)->getValue();
     return array[index].delete_node(value, name);
 }
 

@@ -8,6 +8,7 @@
 
 int main()
 {
+///testing double linked list functions
     DLList* List = new DLList();
     List->setListName("Pokemon List");
 
@@ -85,6 +86,7 @@ int main()
     if(List->getNumNodes() == List->size())
         std::cout << "numNodes and size match!\n\n";
 
+///testing avl tree functions
     AVLTree* tree = new AVLTree();
     tree->insert(List->getKthNode(1));
     tree->insert(List->getKthNode(2));
@@ -107,7 +109,6 @@ int main()
     tree->print();
     std::cout << tree->isMember(152) << "\n";
     std::cout << tree->isMember(151) << "\n";
-
     tree->remove(24);
     tree->print();
     AVLTree* newTree = tree->copy();
@@ -116,22 +117,31 @@ int main()
         std::cout << k << "th smallest is: " << tree->kthSmallest(k)->getDataNode()->getName() << "\n";
     tree->inOrderDump();
 
+///testing chaining based hash table
     HashTable* table = new HashTable(13);
     table->insert(List->getKthNode(1));
     for(int i = 1; i < List->getNumNodes()+1; i++)
         table->insert(List->getKthNode(i));
-    table->remove(150,"Mewtwo");
+    table->remove("Mewtwo");
     table->insert(List->getKthNode(2));
     table->print();
     std::cout << table->getNode("Mew")->getValue() << "\n";
     std::cout << table->size() << "\n";
     table->histogram();
 
+///testing linear probe based hash table functions
     HashTableLP* tableLP = new HashTableLP(13);
     tableLP->insert(List->getKthNode(1));
     tableLP->print();
+    for(int i = 1; i < List->getNumNodes()+1; i++)
+        tableLP->insert(List->getKthNode(i));
+    std::cout << tableLP->isMember("Dig") << "\n";
+    tableLP->remove("Mew");
+    tableLP->print();
+    std::cout << tableLP->getNode("Mewtwo")->getValue() << "\n";
 
-
+///testing destructers
+    delete tableLP;
     delete table;
     delete newTree;
     delete tree;

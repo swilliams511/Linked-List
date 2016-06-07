@@ -2,35 +2,30 @@
 #define _HT
 #include "DLList.hpp"
 
+//chaining based hash table
 class HashTable{
 public:
-    HashTable(int v);
-    ~HashTable();
+    HashTable(int v); //constructor which takes the table size parameter
+    ~HashTable();     //destructor that calls DLList's destructor the same number of times as the table length
 
-    bool insert(Node* node);
-    bool remove(int value, std::string name);
-    Node* getNode(std::string name);
+    bool insert(Node* node);      //inserts a new node into the table
+    bool remove(std::string name); //removes a node from the table given the string key
+    Node* getNode(std::string name); //return the address of a node given the string key
+    int size(); //gets size, should be equal to numElements
+    ///because each array slot is a DLList, DLList's isMember checks if the node is in the array, hence we don't need an is member for this table
 
-    void print();
-    void histogram();
+    void print();   //prints the contents of the table
+    void histogram(); //alternate way to look at the table
 
+    //getter functions
     int getLength() {return length;}
     int getNumElements() {return numElements;}
-    int size();
-
 
 private:
     DLList* array; //pointer to an array of linked lists
-    int length;
-    int numElements;
-    int hash(std::string itemKey);
-
-
+    int length; //initial length of the table array
+    int numElements; //size of table, managed by insert/delete
+    int hash(std::string itemKey); //hash function to turn a string into an index
 };
-
-
-
-
-
 
 #endif // _HT

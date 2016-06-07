@@ -18,9 +18,9 @@ Node::Node(int x, std::string y)
     children = new std::vector<Node*>;
 }
 
-Node* Node::copyNode(Node* v)
+Node* Node::copyNode()
 {
-    return new Node(v->getValue(),v->getName());
+    return new Node(value,name);
 }
 
 void Node::print()
