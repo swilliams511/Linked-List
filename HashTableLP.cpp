@@ -20,7 +20,7 @@ HashTableLP::~HashTableLP()
 }
 
 //hash function to convert a string to an index
-int HashTableLP::hash(std::string itemKey)
+int HashTableLP::hash(std::string const& itemKey)
 {
     int value = 0;
     for(unsigned i = 0; i < itemKey.length(); i++)
@@ -28,18 +28,17 @@ int HashTableLP::hash(std::string itemKey)
     return (value * itemKey.length()) % length;
 }
 
-bool HashTableLP::isMember(std::string name)
+bool HashTableLP::isMember(std::string const& name)
 {
     int index = hash(name);
-    int temp = index; //temp var to assign start to the starting index in the while loop
-    int start = -1;   //the index will never be -1 so the 2nd condition of the while loop will hold entering it the first time
-    while(array[index] != nullptr && index != start)//will wrap around until we get back to the starting index
+    int counter = 0;  //a counter to see how many times we have gone through the array. If we go length times, we will get back to where we started
+    while(array[index] != nullptr && counter != length)//will wrap around until we get back to the starting index
     {                                               //if the array is full
-        start = temp;          //now that we are in the loop, update start to equal index. The temp value ensure that start will always be equal to length even though it is assigned each pass of the loop
         if(array[index]->getName() == name) //if the node is found
             return true;                    //tell us its there
         index++;                       //move to the next index
         index %= length;               //modulo wrapper to ensure index stays less than length
+        counter++;                 //add 1 to the number of indexes checked for the key
     }
     return false; //if we get to here, the node isn't in the table
 }
@@ -64,7 +63,7 @@ bool HashTableLP::insert(Node* node)
     return true;                     //tell us insert was success
 }
 
-bool HashTableLP::remove(std::string name)
+bool HashTableLP::remove(std::string const& name)
 {
     if(!isMember(name)) //if the node isn't in the table
         return false;   //we cant remove it
@@ -101,7 +100,7 @@ void HashTableLP::print()
 }
 
 //given the key, the node with the name will be returned. works about the same as isMember
-Node* HashTableLP::getNode(std::string name)
+Node* HashTableLP::getNode(std::string const& name)
 {
     if(!isMember(name))
     {

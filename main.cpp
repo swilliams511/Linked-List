@@ -4,6 +4,7 @@
 #include "AVLTree.hpp"
 #include "HashTable.hpp"
 #include "HashTableLP.hpp"
+#include "Stack.hpp"
 #include <fstream>
 
 int main()
@@ -140,7 +141,23 @@ int main()
     tableLP->print();
     std::cout << tableLP->getNode("Mewtwo")->getValue() << "\n";
 
+
+///testing stack
+    Stack* stack = new Stack();
+    stack->peek();
+    stack->push(new GraphNode(List->getKthNode(1)));
+    stack->push(new GraphNode(List->getKthNode(2)));
+    stack->push(new GraphNode(List->getKthNode(12)));
+    std::cout << stack->peek()->getDataNode()->getName() << "\n";
+    stack->print();
+    stack->pop();
+    stack->print();
+
+
+
+
 ///testing destructers
+    delete stack;
     delete tableLP;
     delete table;
     delete newTree;

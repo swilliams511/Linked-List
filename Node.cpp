@@ -6,16 +6,14 @@ Node::Node()
     next = nullptr;
     value = 0;
     name = "";
-    children = new std::vector<Node*>;
 }
 
-Node::Node(int x, std::string y)
+Node::Node(int x, std::string const& y)
 {
     prev = nullptr;
     next = nullptr;
     value = x;
     name = y;
-    children = new std::vector<Node*>;
 }
 
 Node* Node::copyNode()
@@ -38,10 +36,7 @@ void Node::print()
     //    std::cout << "Address for next is: " << next << "\n";
 }
 
-void Node::addChild(Node *node)
-{
-    children->push_back(node);
-}
+
 
 
 

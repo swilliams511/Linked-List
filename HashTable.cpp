@@ -18,7 +18,7 @@ HashTable::~HashTable()
 }
 
 //hash function to convert a string to an index
-int HashTable::hash(std::string itemKey)
+int HashTable::hash(std::string const& itemKey)
 {
     int value = 0;
     for(unsigned i = 0; i < itemKey.length(); i++)
@@ -36,7 +36,7 @@ bool HashTable::insert(Node* node)
 
 }
 
-bool HashTable::remove(std::string name)
+bool HashTable::remove(std::string const& name)
 {
     int index = hash(name);
     int value = array[index].getNode(name)->getValue();
@@ -56,7 +56,7 @@ void HashTable::print()
 }
 
 //given the key, the node with the name will be returned
-Node* HashTable::getNode(std::string name)
+Node* HashTable::getNode(std::string const& name)
 {
     int index = hash(name);
     return array[index].getNode(name);

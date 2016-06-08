@@ -1,53 +1,67 @@
 # depslib dependency file v1.0
-1465276866 source:c:\users\scott williams\desktop\linked list\main.cpp
+1465358613 source:c:\users\scott williams\desktop\linked list\main.cpp
 	"Node.hpp"
 	"DLList.hpp"
 	"TreeNode.hpp"
 	"AVLTree.hpp"
 	"HashTable.hpp"
 	"HashTableLP.hpp"
+	"Stack.hpp"
 	<fstream>
 
-1465240141 c:\users\scott williams\desktop\linked list\node.hpp
+1465352499 c:\users\scott williams\desktop\linked list\node.hpp
 	<iostream>
 	<cstdlib>
 	<string>
 	<vector>
 
-1465186762 source:c:\users\scott williams\desktop\linked list\dllist.cpp
+1465349980 source:c:\users\scott williams\desktop\linked list\dllist.cpp
 	"DLList.hpp"
 	<fstream>
 	<cassert>
 	<iostream>
 
-1464900380 c:\users\scott williams\desktop\linked list\dllist.hpp
+1465349979 c:\users\scott williams\desktop\linked list\dllist.hpp
 	"Node.hpp"
 
-1465240141 source:c:\users\scott williams\desktop\linked list\node.cpp
+1465352555 source:c:\users\scott williams\desktop\linked list\node.cpp
 	"Node.hpp"
 
 1465104878 source:c:\users\scott williams\desktop\linked list\treenode.cpp
 	"TreeNode.hpp"
 
-1464920131 c:\users\scott williams\desktop\linked list\treenode.hpp
+1465279067 c:\users\scott williams\desktop\linked list\treenode.hpp
 	"Node.hpp"
 
 1465187232 source:c:\users\scott williams\desktop\linked list\avltree.cpp
 	"AVLTree.hpp"
 	<queue>
 
-1465104878 c:\users\scott williams\desktop\linked list\avltree.hpp
+1465279067 c:\users\scott williams\desktop\linked list\avltree.hpp
 	"TreeNode.hpp"
 
-1465276087 source:c:\users\scott williams\desktop\linked list\hashtable.cpp
+1465350158 source:c:\users\scott williams\desktop\linked list\hashtable.cpp
 	"HashTable.hpp"
 
-1465276515 c:\users\scott williams\desktop\linked list\hashtable.hpp
+1465350158 c:\users\scott williams\desktop\linked list\hashtable.hpp
 	"DLList.hpp"
 
-1465276515 source:c:\users\scott williams\desktop\linked list\hashtablelp.cpp
+1465351279 source:c:\users\scott williams\desktop\linked list\hashtablelp.cpp
 	"HashTableLP.hpp"
 
-1465276866 c:\users\scott williams\desktop\linked list\hashtablelp.hpp
+1465352499 c:\users\scott williams\desktop\linked list\hashtablelp.hpp
 	"DLList.hpp"
+
+1465358972 source:c:\users\scott williams\desktop\linked list\stack.cpp
+	"Stack.hpp"
+
+1465358171 c:\users\scott williams\desktop\linked list\stack.hpp
+	<vector>
+	"GraphNode.hpp"
+
+1465359165 source:c:\users\scott williams\desktop\linked list\graphnode.cpp
+	"GraphNode.hpp"
+
+1465359146 c:\users\scott williams\desktop\linked list\graphnode.hpp
+	"Node.hpp"
 

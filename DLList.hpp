@@ -8,32 +8,32 @@
 class DLList {
 public:
     DLList(); //default constructor
-    DLList(std::string name); //parameterized constructor which names the list
+    DLList(std::string const& name); //parameterized constructor which names the list
     ~DLList();  //destructor, calls Node's destructor for each node in the list
     DLList* copy(); //copy constructor
-    DLList* copy(std::string name); //copy constructor that allows a new list name to be specified
+    DLList* copy(std::string const& name); //copy constructor that allows a new list name to be specified
 
-    void insert_from_file(std::string fileName); //see implementation for how this works
+    void insert_from_file(std::string const& fileName); //see implementation for how this works
 
     //node is created "new" in insert based on passed parameters. A different
     //set of functions could need to be written if you wanted to create the
     //new node in main and pass that to the insert
-    bool insert_front(int value, std::string name); //puts the node at the head value
-    bool insert_back(int value, std::string name);  //puts the node at the tail value
-    bool insert_kth(int k, int value, std::string name); //puts the node at the specified position
+    bool insert_front(int value, std::string const& name); //puts the node at the head value
+    bool insert_back(int value, std::string const& name);  //puts the node at the tail value
+    bool insert_kth(int k, int value, std::string const& name); //puts the node at the specified position
 
     //node is deleted to match the "new" in insert
     bool delete_front(); //removes first node
     bool delete_back();  //removes last node
-    bool delete_node(int value, std::string name);//searches for node based on parameters then deletes it
+    bool delete_node(int value, std::string const& zname);//searches for node based on parameters then deletes it
     bool delete_kth(int k); //deletes whatever node is at position k in the list
 
-    bool inList(int value, std::string name); //check if the node is in the list
+    bool inList(int value, std::string const& name); //check if the node is in the list
 
     //sequential searches
-    Node* getNode(int value, std::string name); //find the node in the list and gives its address
+    Node* getNode(int value, std::string const& name); //find the node in the list and gives its address
     Node* getNode(int value);                   //variation that takes only the value
-    Node* getNode(std::string name);            //variation that takes only the name
+    Node* getNode(std::string const& name);            //variation that takes only the name
     Node* getKthNode(int v); //returns the kth node in the list, similar to std::vector's "->at(k)" function
 
     void sortList();   //quicksorts the nodes from smallest to largest value

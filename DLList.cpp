@@ -11,7 +11,7 @@ DLList::DLList() //default constructor
     numNodes = 0;
 }
 
-DLList::DLList(std::string name) //parameterized constructor
+DLList::DLList(std::string const& name) //parameterized constructor
 {
     listName = name;
     head = nullptr;
@@ -41,7 +41,7 @@ DLList* DLList::copy() //creates an exact copy of the current list
     return newList; //return the newly created list. remember to have a matching delete for it
 }
 
-DLList* DLList::copy(std::string name) //creates an exact copy of the list, except you can specify the list's name
+DLList* DLList::copy(std::string const& name) //creates an exact copy of the list, except you can specify the list's name
 {
     DLList* newList = new DLList();
     newList->setListName(name);
@@ -56,7 +56,7 @@ DLList* DLList::copy(std::string name) //creates an exact copy of the list, exce
     return newList;
 }
 
-void DLList::insert_from_file(std::string fileName)
+void DLList::insert_from_file(std::string const& fileName)
 {
     std::string pkmnNum;
     std::string pkmnName;
@@ -82,7 +82,7 @@ void DLList::insert_from_file(std::string fileName)
     stream.close();
 }
 
-bool DLList::insert_front(int value, std::string name)
+bool DLList::insert_front(int value, std::string const& name)
 {
     if(inList(value,name))  //if the node is already in the list
         return false; //don't insert it
@@ -105,7 +105,7 @@ bool DLList::insert_front(int value, std::string name)
     return false;
 }
 
-bool DLList::insert_back(int value, std::string name)
+bool DLList::insert_back(int value, std::string const& name)
 {
     if(inList(value,name))//if the node is already in the list
         return false; //don't insert it
@@ -150,7 +150,7 @@ void DLList::print()
 }
 
 //sequential search
-bool DLList::inList(int value, std::string name)
+bool DLList::inList(int value, std::string const& name)
 {
     Node* node = head; //set the head nodes address to a temporary node for traversing the list
     while (node != nullptr) //while the node isn't empty
@@ -163,7 +163,7 @@ bool DLList::inList(int value, std::string name)
 }
 
 //similar to above, but returns the address of the found node
-Node* DLList::getNode(int value, std::string name)
+Node* DLList::getNode(int value, std::string const& name)
 {
     Node* node = head;
     while (node != nullptr)
@@ -191,7 +191,7 @@ Node* DLList::getNode(int value)
 }
 
 //similar to above, only takes the name parameter
-Node* DLList::getNode(std::string name)
+Node* DLList::getNode(std::string const& name)
 {
     Node* node = head;
     while (node != nullptr)
@@ -244,7 +244,7 @@ bool DLList::delete_back()
     return true;
 }
 
-bool DLList::delete_node(int value, std::string name)
+bool DLList::delete_node(int value, std::string const& name)
 {
     if(head == nullptr) //if there are no nodes
         return false; //cant delete
@@ -383,7 +383,7 @@ bool DLList::isListSorted() //checks if the nodes go from smallest to greatest, 
 
 
 //inserts a new node at the kth position in the list
-bool DLList::insert_kth(int k, int value, std::string name)
+bool DLList::insert_kth(int k, int value, std::string const& name)
 {
     if(k > numNodes+1) //if input position exceeds size of list plus 1 (since we're adding a node)
     {

@@ -9,8 +9,8 @@ public:
     ~HashTable();     //destructor that calls DLList's destructor the same number of times as the table length
 
     bool insert(Node* node);      //inserts a new node into the table
-    bool remove(std::string name); //removes a node from the table given the string key
-    Node* getNode(std::string name); //return the address of a node given the string key
+    bool remove(std::string const& name); //removes a node from the table given the string key
+    Node* getNode(std::string const& name); //return the address of a node given the string key
     int size(); //gets size, should be equal to numElements
     ///because each array slot is a DLList, DLList's isMember checks if the node is in the array, hence we don't need an is member for this table
 
@@ -25,7 +25,7 @@ private:
     DLList* array; //pointer to an array of linked lists
     int length; //initial length of the table array
     int numElements; //size of table, managed by insert/delete
-    int hash(std::string itemKey); //hash function to turn a string into an index
+    int hash(std::string const& itemKey); //hash function to turn a string into an index
 };
 
 #endif // _HT

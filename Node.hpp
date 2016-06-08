@@ -11,7 +11,7 @@
 class Node{
 public:
     Node(); //default constructor
-    Node(int x, std::string y); //parameterized constructor
+    Node(int x, std::string const& y); //parameterized constructor
     Node* copyNode();  //copy constructor
     void print(); //prints the contents of the node
     //getters/setters
@@ -22,19 +22,14 @@ public:
     int getValue() {return value;}
     void setValue(int v) {value = v;}
     std::string getName() {return name;}
-    void setName(std::string v) {name = v;}
-
-    ///these are currently unused
-    std::vector<Node*> * getChildren() {return children;}
-    void addChild(Node* node);
+    void setName(std::string const& v) {name = v;}
 
 private:
     Node* prev;
     Node* next;
     int value;
     std::string name;
-    ///currently unused
-    std::vector<Node*>* children;
+
 
 };
 
