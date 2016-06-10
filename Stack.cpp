@@ -8,20 +8,16 @@ Stack::Stack()
 Stack::~Stack()
 {
       //delete all pointers in the vector, then delete the vector
+    ///the function using the stack (and has ownership of the graphNodes)
+    ///SHOULD pop nodes prior to deleting it
 
-    ///if stack is going to be used for a graph, then only the vector should be destroyed here
-    ///the graph class would take care making new GraphNodes and deleting them
+    ///if new nodes are inserted into a stack in main (or the stack has complete ownership of the nodes),
+    ///this will get rid of them
     for(unsigned i = 0; i < nodeStack->size(); i++)
         delete nodeStack->at(i);
 
     delete nodeStack;
 }
-
-
-
-
-
-
 
 void Stack::push(GraphNode *node)
 {

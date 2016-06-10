@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1465358613 source:c:\users\scott williams\desktop\linked list\main.cpp
+1465446430 source:c:\users\scott williams\desktop\linked list\main.cpp
 	"Node.hpp"
 	"DLList.hpp"
 	"TreeNode.hpp"
@@ -7,6 +7,8 @@
 	"HashTable.hpp"
 	"HashTableLP.hpp"
 	"Stack.hpp"
+	"GraphNode.hpp"
+	"Graph.hpp"
 	<fstream>
 
 1465352499 c:\users\scott williams\desktop\linked list\node.hpp
@@ -52,16 +54,23 @@
 1465352499 c:\users\scott williams\desktop\linked list\hashtablelp.hpp
 	"DLList.hpp"
 
-1465358972 source:c:\users\scott williams\desktop\linked list\stack.cpp
+1465362384 source:c:\users\scott williams\desktop\linked list\stack.cpp
 	"Stack.hpp"
 
-1465358171 c:\users\scott williams\desktop\linked list\stack.hpp
+1465421221 c:\users\scott williams\desktop\linked list\stack.hpp
 	<vector>
 	"GraphNode.hpp"
 
-1465359165 source:c:\users\scott williams\desktop\linked list\graphnode.cpp
+1465446384 source:c:\users\scott williams\desktop\linked list\graphnode.cpp
 	"GraphNode.hpp"
 
-1465359146 c:\users\scott williams\desktop\linked list\graphnode.hpp
+1465446960 c:\users\scott williams\desktop\linked list\graphnode.hpp
 	"Node.hpp"
+
+1465447145 c:\users\scott williams\desktop\linked list\graph.hpp
+	"GraphNode.hpp"
+	"Stack.hpp"
+
+1465515362 source:c:\users\scott williams\desktop\linked list\graph.cpp
+	"Graph.hpp"
 
