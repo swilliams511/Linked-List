@@ -164,6 +164,15 @@ int main()
     std::cout << graph->getStartingNode()->getEdgeNodes()->at(0)->getDataNode()->getName() << "\n";
     std::cout << graph->getStartingNode()->getEdgeNodes()->at(0)->getEdgeNodes()->at(0)->getDataNode()->getName() << "\n";
     graph->dfs_itr_print();
+    std::cout << graph->isMemberDFS(1) << "\n";
+    std::cout << graph->isMemberDFS(999) << "\n";
+    std::cout << graph->isMember(1) << "\n";
+    std::cout << graph->isMember(999) << "\n";
+    graph->dfs_itr_print();
+    //graph->removeVertex(1);
+    //graph->removeVertex(0);
+    //graph->setStartingNode(graph->getVertices()->at(0));
+    //graph->dfs_itr_print();
 
 ///testing destructers
     delete stack;
