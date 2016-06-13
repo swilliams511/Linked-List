@@ -1,4 +1,5 @@
 #include "Graph.hpp"
+#include <queue>
 
 Graph::Graph()
 {
@@ -61,11 +62,12 @@ bool Graph::isMemberDFS(int nodeIndex)
             }
             //if the node wasn't found...
             node->setVisited(true);      //mark it as visited so we dont go to it again
-        }
 
-        for(unsigned i = 0; i < node->getEdgeNodes()->size(); i++) //looks at each one of the edges of the current node
-            if(!node->getEdgeNodes()->at(i)->getVisited()) //if the node's current edge hasnt been visited
-                stack->push(node->getEdgeNodes()->at(i)); //add it to the stack
+
+            for(unsigned i = 0; i < node->getEdgeNodes()->size(); i++) //looks at each one of the edges of the current node
+                if(!node->getEdgeNodes()->at(i)->getVisited()) //if the node's current edge hasnt been visited
+                    stack->push(node->getEdgeNodes()->at(i)); //add it to the stack
+        }
     }
     //at this point all nodes have been traversed and the node wasnt found
     for(unsigned i = 0; i < vertices->size(); i++) //mark all the nodes as not visited now that the function
@@ -94,18 +96,19 @@ void Graph::dfs_itr_print()
         {                                //print that we are visiting it
             std::cout << "---In node: " << node->getNodeNum() << " - " << node->getDataNode()->getName() << "---\n";
             node->setVisited(true);      //mark it as visited so we dont go to it again
-        }
-        std::cout << "Edges: ";
-        for(unsigned i = 0; i < node->getEdgeNodes()->size(); i++) //looks at each one of the edges of the current node
-        {
-            std::cout <<  "("  << node->getEdgeNodes()->at(i)->getNodeNum()
-                <<  "," << node->getEdgeNodes()->at(i)->getDataNode()->getName() << ") ";
-            if(!node->getEdgeNodes()->at(i)->getVisited()) //if the node's current edge hasnt been visited
+
+            std::cout << "Edges: ";
+            for(unsigned i = 0; i < node->getEdgeNodes()->size(); i++) //looks at each one of the edges of the current node
             {
-                stack->push(node->getEdgeNodes()->at(i)); //add it to the stack
+                std::cout <<  "("  << node->getEdgeNodes()->at(i)->getNodeNum()
+                    <<  "," << node->getEdgeNodes()->at(i)->getDataNode()->getName() << ") ";
+                if(!node->getEdgeNodes()->at(i)->getVisited()) //if the node's current edge hasnt been visited
+                {
+                    stack->push(node->getEdgeNodes()->at(i)); //add it to the stack
+                }
             }
+            std::cout << "\n";
         }
-        std::cout << "\n";
     }
     //at this point all nodes have been traversed
     for(unsigned i = 0; i < vertices->size(); i++) //mark all the nodes as not visited now that the function
@@ -115,7 +118,37 @@ void Graph::dfs_itr_print()
     delete stack;  //since the function is done, kill the stack to release memory
 }
 
+void Graph::bfs_print()
+{
+    if(startingNode == nullptr) //if the list is empty
+        return;                 //dont print anything
+    std::queue<GraphNode*> q;   //makes a queue to hold nodes
+    q.push(startingNode);       //puts the starting node into the queue
+    while(!q.empty())           //as long as the queue isn't empty
+    {
+        GraphNode* node = q.front(); //get the node at the front of the queue
+        q.pop();                     //then remove it from the queue
+        if(!node->getVisited())      //if the node hasnt been visited, print were in it
+        {
+            std::cout << "---In node: " << node->getNodeNum() << " - " << node->getDataNode()->getName() << "---\n";
+            node->setVisited(true);  //set it to visited
 
+            std::cout << "Edges: ";
+            for(unsigned i = 0; i < node->getEdgeNodes()->size(); i++) //loop through the current node's edges
+            {
+                GraphNode* nnode = node->getEdgeNodes()->at(i); //temp var to make code easier to read
+                std::cout <<  "("  << nnode->getNodeNum()
+                    <<  "," << nnode->getDataNode()->getName() << ") ";
+                if(!nnode->getVisited())                        //if the edge hasn't been visited
+                    q.push(nnode);                              //add it to the queue
+            }
+            std::cout << "\n";
+        } //once the queue is empty, the graph has been traversed
+    }
+    for(unsigned i = 0; i < vertices->size(); i++) //marks the nodes as unvisited since the search is done
+        vertices->at(i)->setVisited(false);
+    std::cout << "\n";
+}
 
 
 

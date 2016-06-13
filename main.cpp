@@ -10,6 +10,7 @@
 #include <fstream>
 
 void makeGraph(Graph* graph, DLList* list);
+void makeGraph2(Graph* graph, DLList* list);
 
 int main()
 {
@@ -158,7 +159,7 @@ int main()
     stack->print();
 ///testing Graph (and graphNode)
     Graph* graph = new Graph();
-    makeGraph(graph,List);
+    makeGraph2(graph,pokeList);
 
     ///proves that a shared edge is added to both vertices
     std::cout << graph->getStartingNode()->getEdgeNodes()->at(0)->getDataNode()->getName() << "\n";
@@ -169,6 +170,7 @@ int main()
     std::cout << graph->isMember(1) << "\n";
     std::cout << graph->isMember(999) << "\n";
     graph->dfs_itr_print();
+    graph->bfs_print();
     //graph->removeVertex(1);
     //graph->removeVertex(0);
     //graph->setStartingNode(graph->getVertices()->at(0));
@@ -228,3 +230,36 @@ void makeGraph(Graph* graph, DLList* list)
     //graph->getVertices()->at(9)->addEdge(graph->getVertices()->at(8));
 
 }
+
+
+
+///makes a sample graph to match the file "sampleGraph2.png"
+void makeGraph2(Graph* graph, DLList* list)
+{
+    for(int i = 1; i < 18; i++)
+        graph->addVertex(list->getKthNode(i));
+
+    graph->getVertices()->at(0)->addEdge(graph->getVertices()->at(1));
+    graph->getVertices()->at(0)->addEdge(graph->getVertices()->at(2));
+    graph->getVertices()->at(0)->addEdge(graph->getVertices()->at(16));
+    graph->getVertices()->at(1)->addEdge(graph->getVertices()->at(5));
+    graph->getVertices()->at(1)->addEdge(graph->getVertices()->at(9));
+    graph->getVertices()->at(2)->addEdge(graph->getVertices()->at(4));
+    graph->getVertices()->at(2)->addEdge(graph->getVertices()->at(8));
+    graph->getVertices()->at(2)->addEdge(graph->getVertices()->at(3));
+    graph->getVertices()->at(2)->addEdge(graph->getVertices()->at(14));
+    graph->getVertices()->at(3)->addEdge(graph->getVertices()->at(6));
+    graph->getVertices()->at(3)->addEdge(graph->getVertices()->at(13));
+    graph->getVertices()->at(5)->addEdge(graph->getVertices()->at(7));
+    graph->getVertices()->at(7)->addEdge(graph->getVertices()->at(12));
+    graph->getVertices()->at(8)->addEdge(graph->getVertices()->at(14));
+    graph->getVertices()->at(9)->addEdge(graph->getVertices()->at(12));
+    graph->getVertices()->at(10)->addEdge(graph->getVertices()->at(11));
+    graph->getVertices()->at(11)->addEdge(graph->getVertices()->at(16));
+    graph->getVertices()->at(13)->addEdge(graph->getVertices()->at(14));
+    graph->getVertices()->at(14)->addEdge(graph->getVertices()->at(15));
+
+}
+
+
+

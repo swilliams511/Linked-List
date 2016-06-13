@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1465606682 source:c:\users\scott williams\desktop\linked list\main.cpp
+1465616713 source:c:\users\scott williams\desktop\linked list\main.cpp
 	"Node.hpp"
 	"DLList.hpp"
 	"TreeNode.hpp"
@@ -67,10 +67,11 @@
 1465535120 c:\users\scott williams\desktop\linked list\graphnode.hpp
 	"Node.hpp"
 
-1465605667 c:\users\scott williams\desktop\linked list\graph.hpp
+1465616086 c:\users\scott williams\desktop\linked list\graph.hpp
 	"GraphNode.hpp"
 	"Stack.hpp"
 
-1465606795 source:c:\users\scott williams\desktop\linked list\graph.cpp
+1465617231 source:c:\users\scott williams\desktop\linked list\graph.cpp
 	"Graph.hpp"
+	<queue>
 

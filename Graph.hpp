@@ -21,7 +21,8 @@ public:
     void setStartingNode(GraphNode* v) {startingNode = v;}
     std::vector<GraphNode*>* getVertices() {return vertices;}
 
-    void dfs_itr_print(); //using depth first traversal (iterative), print the graph
+    void dfs_itr_print(); //using depth first traversal (iterative, stack based), print the graph
+    void bfs_print(); //using breadth first traversal (iterative, queue based), print the graph
 
 private:
     GraphNode* startingNode; //this is the first node traversal will use for the graph. by default it is first inserted node

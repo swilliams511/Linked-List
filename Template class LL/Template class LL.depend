@@ -1,0 +1,26 @@
+# depslib dependency file v1.0
+1465788813 source:c:\users\scott williams\desktop\linked list\template class ll\main.cpp
+	"Node.hpp"
+	"Node.cpp"
+	"Data.hpp"
+	<iostream>
+	<string>
+
+1465789575 c:\users\scott williams\desktop\linked list\template class ll\node.hpp
+	<iostream>
+
+1465788790 c:\users\scott williams\desktop\linked list\template class ll\node.cpp
+	"Node.hpp"
+	<type_traits>
+
+1465789576 source:c:\users\scott williams\desktop\linked list\template class ll\node.cpp
+	"Node.hpp"
+	<type_traits>
+
+1465788790 source:c:\users\scott williams\desktop\linked list\template class ll\data.cpp
+	"Data.hpp"
+
+1465788790 c:\users\scott williams\desktop\linked list\template class ll\data.hpp
+	<string>
+	<iostream>
+
