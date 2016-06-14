@@ -1,26 +1,37 @@
 # depslib dependency file v1.0
-1465788813 source:c:\users\scott williams\desktop\linked list\template class ll\main.cpp
+1465878906 source:c:\users\scott williams\desktop\linked list\template class ll\main.cpp
 	"Node.hpp"
 	"Node.cpp"
 	"Data.hpp"
+	"LinkedList.hpp"
 	<iostream>
 	<string>
+	<vector>
 
-1465789575 c:\users\scott williams\desktop\linked list\template class ll\node.hpp
+1465867222 c:\users\scott williams\desktop\linked list\template class ll\node.hpp
 	<iostream>
 
-1465788790 c:\users\scott williams\desktop\linked list\template class ll\node.cpp
+1465879940 c:\users\scott williams\desktop\linked list\template class ll\node.cpp
 	"Node.hpp"
+	"Data.hpp"
 	<type_traits>
 
-1465789576 source:c:\users\scott williams\desktop\linked list\template class ll\node.cpp
+1465879940 source:c:\users\scott williams\desktop\linked list\template class ll\node.cpp
 	"Node.hpp"
+	"Data.hpp"
 	<type_traits>
 
-1465788790 source:c:\users\scott williams\desktop\linked list\template class ll\data.cpp
+1465874597 source:c:\users\scott williams\desktop\linked list\template class ll\data.cpp
 	"Data.hpp"
 
 1465788790 c:\users\scott williams\desktop\linked list\template class ll\data.hpp
 	<string>
 	<iostream>
+
+1465872790 source:c:\users\scott williams\desktop\linked list\template class ll\linkedlist.cpp
+	"LinkedList.hpp"
+	"Data.hpp"
+
+1465879973 c:\users\scott williams\desktop\linked list\template class ll\linkedlist.hpp
+	"Node.hpp"
 

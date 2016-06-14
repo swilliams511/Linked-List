@@ -1,13 +1,15 @@
 #include "Node.hpp"
 #include "Node.cpp"
 #include "Data.hpp"
+#include "LinkedList.hpp"
 #include <iostream>
 #include <string>
+#include <vector>
 
 int main()
 {
 
-    std::cout << "---start---\n";
+    std::cout << "---start of node test---\n";
     /*
 ///analysis of "Data" object and start of making a "Node"
     Data test(151,"Mew"); //calls data's paraterized constructor
@@ -53,6 +55,35 @@ int main()
 
     delete node;
 
+    std::cout << "---start of List test---\n";
+///custom object list test
+    LinkedList<Data>* list = new LinkedList<Data>;
+    list->push_front(Data(150,"Mewtwo"));
+    std::cout << list->size() << "\n";
+    list->getHead()->print();
 
+///non-class datatype test
+    LinkedList<int>* list1 = new LinkedList<int>;
+    list1->push_front(12121);
+    std::cout << list1->getHead()->getData() << "\n";
+
+    list->push_front(Data(151,"Mew"));
+    list->push_back(Data(1,"Bulbasaur"));
+    delete list1;
+
+///LL assignment operator test
+    LinkedList<Data>* list3 = new LinkedList<Data>;
+    list3->push_front(Data(154,"Mewtwo"));
+    std::cout << "------\n";
+    *list3 = *list;           //must dereference the pointers for assignment to work
+    std::cout << "------\n";
+    list3->print();
+    delete list3;
+///-------
+
+
+
+
+    delete list;
     return 0;
 }

@@ -20,13 +20,14 @@ public:
     void setNext(Node* node) {next = node;}
 
     //this function is build specific for dataTesting of type "Data"
-    //don't call it if you are using a different datatyoe (int,string, etc)...
+    //don't call it if you are using a different datatype (int,string, etc)...
     void print();
 private:
     T nodeData;
     Node* prev;
     Node* next;
     void swap(Node& otherNode);
+
 
 };
 

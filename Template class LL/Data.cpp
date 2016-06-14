@@ -57,7 +57,7 @@ bool Data::operator>(const Data& otherData)
 
 void Data::print()
 {
-    std::cout << value << ": " << name << "\n";
+    std::cout << "#" << value << " - " << name << "\n";
 }
 
 
