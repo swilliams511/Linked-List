@@ -34,10 +34,13 @@
 		</Compiler>
 		<Unit filename="Data.cpp" />
 		<Unit filename="Data.hpp" />
+		<Unit filename="LinkedList.cpp" />
 		<Unit filename="LinkedList.hpp" />
 		<Unit filename="Node.cpp" />
 		<Unit filename="Node.hpp" />
-		<Unit filename="main.cpp" />
+		<Unit filename="Vector.cpp" />
+		<Unit filename="Vector.hpp" />
+		<Unit filename="main2.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

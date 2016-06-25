@@ -12,10 +12,12 @@ public:
     ~Data();                          //destructor
     Data(const Data& otherData);        //copy constructor
     Data operator=(Data otherData); //assignment operator
-    //we will assume that no two data will be the same for this specific object
-    //else we would need ==,!=,<=,>= as well
+///overloaded for sorting the data
     bool operator<(const Data& otherData);
     bool operator>(const Data& otherData);
+///overloaded for finding specified data
+    bool operator==(const Data& otherData);
+    bool operator!=(const Data& otherData);
 
     //getters/setters for private variables. Shouldn't appear in other class implementation (only main)
     //or specified print functions

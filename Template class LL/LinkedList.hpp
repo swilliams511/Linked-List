@@ -3,218 +3,87 @@
 
 #include "Node.hpp"
 ///see "template_tip.png" for why the implementation is in this file
+///switched from implementing all in .hpp file to moving to .cpp file
+///and including that in main. Seems to work the same ^_^
 
+//templated so node can hold ~any data type
 template <class T>
+//implemented as a double linked list with "Node's" storing the data
 class LinkedList{
 public:
-    LinkedList(); //: head(nullptr), tail(nullptr), numNodes(0) {std::cout << "List's destructor\n";}
-    ~LinkedList();
-    LinkedList(const LinkedList& otherList);
-    LinkedList& operator=(LinkedList& otherList);
-
-    int size();
-    void push_front(T data);
-    void push_back(T data);
-    void pop_front();
-
-    Node<T>* getHead() {return head;}
-    Node<T>* getTail() {return tail;}
-    void setHead(Node<T>* node) {head = node;}
-    void setTail(Node<T>* node) {head = node;}
-
-    void print();
-
-
+///constructor based functions and overloaded operation functions
+    LinkedList(); //default constructor. Alternate way to implement commented out below
+   /* LinkedList() : head(nullptr), tail(nullptr), numNodes(0) {std::cout << "List's constructor\n";}  */
+    ~LinkedList();//destructor
+    LinkedList(const LinkedList& otherList);//copy constructor
+    LinkedList& operator=(LinkedList& otherList);//overloaded assignment operator
+///member functions
+    int size();                      //returns the number of nodes in the list
+    bool isMember(const T& data);    //sequential search to lookup if the passed data is in the list
+    bool push_front(const T& data);  //adds a node to the start of the list
+    bool push_back(const T& data);   //adds a node to the back of the list
+    bool insert(const T& data, int index); //inserts the data at the kth position
+    bool pop_front();                //deletes the first node of the list
+    bool pop_back();                 //deletes the last node of the list
+    bool remove(int index);          //removes the data at the kth position
+    bool remove(const T& data);      //removes the passed data from the list
+    T at(int index);                 //returns the data from the node at the index. Must be nonEmpty list with index in range [0,size()]
+    void sort();                     //sorts the list using quicksort algorithm
+    T front();                       //returns the data at the front of the list
+    T back();                        //returns the data at the back of the list
+    ///could implement sort using merge sort
+///getters/setters for testing
+    //Node<T>* getHead() {return head;}
+    //Node<T>* getTail() {return tail;}
+    //void setHead(Node<T>* node) {head = node;}
+    //void setTail(Node<T>* node) {tail = node;}
+    //no getter/setter for numNodes since it doesn't need to be set and size() gets the nodes
+    /* int getNumNodes() {return numNodes;}        */
+    /* void setNumNodes(int num) {numNodes = num;} */
+///debug functions to view whats happening
+    void print();                    //use this if the data type has a print function
+    void print_nonClass();           //use this if the data type is a primitive data type
 private:
+///Variables that make a linked list
     Node<T>* head;
     Node<T>* tail;
     int numNodes;
+///helper functions.
+    bool first_insert(Node<T>* node);
+    bool last_remove();
+    bool insert_middle(Node<T>* node,Node<T>* newNode);
+    bool remove_middle(Node<T>* node);
+    Node<T>* headToIndex(int index);
+    Node<T>* tailToIndex(int index);
+    bool _push_front(const T& data);  //assumes isMember is checked
+    bool _push_back(const T& data);   //"  "
+    bool _insert(const T& data, int index); //
+    bool _pop_front();                //
+    bool _pop_back();                 //
+    bool _remove(int index);          //
+    bool _remove(const T& data);      //
+    void _sort(Node<T>* left, Node<T>* right);
+    Node<T>* partition(Node<T>* left, Node<T>* right);
 
-    //debug variables for tracking number of new/delete calls the list makes
+///debug variables for tracking number of new/delete calls the list makes
     //Will be displayed when the List's destructor finishes deleting all nodes
     int newCalls;
     int delCalls;
-
-
-
 };
-
-template <class T>
-LinkedList<T>::LinkedList()
-{
-    std::cout << "List's constructor\n";
-    head = nullptr;
-    tail = nullptr;
-    numNodes = 0;
-    //debug variables
-    newCalls = 0;
-    delCalls = 0;
-}
-
-template<class T>
-LinkedList<T>::~LinkedList()
-{
-    std::cout << "List's destructor\n";
-    while(head != nullptr)
-        pop_front();
-///tracker for number of new/delete node calls List makes. Should be equal
-    std::cout << "New total: " << newCalls << "\ndelete total: "  << delCalls << "\n";
-}
-
-template <class T>
-LinkedList<T>::LinkedList(const LinkedList& otherList)
-{
-    std::cout << "LL copy";
-    if(otherList.head == nullptr)
-    {
-        head = nullptr;
-        tail = nullptr;
-        numNodes = 0;
-        //debug variables
-        newCalls = 0;
-        delCalls = 0;
-    }
-    else
-    {
-        Node<T>* node = head;
-        while(node != nullptr)
-            push_back(node.getData);
-    }
-
-}
-
-template <class T>
-LinkedList<T>& LinkedList<T>::operator=(LinkedList& otherList)
-{
-///this is NOT called for pointer types, must dereference pointers for this to be called
-    std::cout << "LL assign\n";
-    while(head != nullptr)
-        pop_front();
-
-    Node<T>* node = otherList.head;
-
-    while(node != nullptr)
-    {
-        push_back(node->getData());
-        node = node->getNext();
-    }
-
-    return *this;
-}
-
-
-template <class T>
-int LinkedList<T>::size()
-{
-    return numNodes;
-///note: possible to not use memory and count each node starting at the head
-///looks something like this...
 /*
-    if(head == nullptr)
-        return 0;
-    Node<T>* node = head;
-    counter = 0;
-    while(node != nullptr)
-    {
-        node = node->getNext();
-        counter++;
-    }
-    return counter;
+Runtime table for member functions
+size() = O(1) (since numNodes is managed by insert/remove. Would be O(n) for sequential counting)
+at() = O(ceiling(n/2))
+isMember() = O(n)
+push_front() = O(1) + O(n) for isMember() check
+push_back() = O(1) + O(n) for isMember() check
+insert(index) =    TODO
+pop_front() = O(1)
+pop_back() = O(1)
+remove() = O(n)
+remove(index) =    TODO
+
+
+
 */
-}
-
-template <class T>
-void LinkedList<T>::push_front(T data)
-{
-    Node<T>* node = new Node<T>; //create a new instance of a node that holds the requested dataType
-    newCalls++;
-    node->setData(data);         //set the passed data to the node
-
-    if(head == nullptr)          //if the list is empty
-    {                            //one node is inserted
-        head = node;             //that node is both the head and tail
-        tail = node;
-        numNodes++;              //increase the list's size
-        return;                  //insertion finished
-    }                            //if the list isn't empty...
-    node->setNext(head);         //the new node next pointer is now the head
-    head->setPrev(node);         //the heads prev pointer is now the new node
-    head = node;                 //update the head to be the new node since it is in front of the old head
-    numNodes++;                  //increase the size of the list
-}
-
-template <class T>
-void LinkedList<T>::push_back(T data)
-{
-    if(head == nullptr) //if the list is empty
-    {
-        push_front(data); //let this function do the work, less code duplication
-        return;
-    }
-
-
-    Node<T>* node = new Node<T>;
-    newCalls++;
-    node->setData(data);
-    tail->setNext(node);
-    node->setPrev(tail);
-    tail = node;
-    numNodes++;
-
-}
-
-template <class T>
-void LinkedList<T>::pop_front()
-{
-    if(head == nullptr)
-        return;
-
-    if(numNodes == 1)
-    {
-        delete head;
-        delCalls++;
-        head = nullptr;
-        tail = nullptr;
-        numNodes--;
-        return;
-    }
-    Node<T>* node = head->getNext();
-    node->setPrev(nullptr);
-    delete head;
-    delCalls++;
-    head = node;
-    numNodes--;
-
-}
-
-
-template <class T>
-void LinkedList<T>::print()
-{
-    std::cout << "***Contents of Linked List***\n";
-    if(head == nullptr)
-    {
-        std::cout << "List empty\n";
-        return;
-    }
-    Node<T>* node = head;
-    int counter = 1;
-    while(node != nullptr)
-    {
-        std::cout << "Node " << counter << " holds: ";
-        node->print();
-        node = node->getNext();
-        counter++;
-    }
-    std::cout << "\n";
-}
-
-
-
-
-
-
-
-
 #endif // _LL
-
