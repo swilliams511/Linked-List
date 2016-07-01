@@ -1,7 +1,5 @@
 #include "LinkedList.hpp"
 
-
-
 template <class T>
 LinkedList<T>::LinkedList()
 {
@@ -48,24 +46,20 @@ LinkedList<T>::LinkedList(const LinkedList& otherList)
 }
 
 template <class T>
-LinkedList<T>& LinkedList<T>::operator=(LinkedList& otherList)
+LinkedList<T>& LinkedList<T>::operator=(LinkedList otherList)
 {
-///this is NOT called for pointer types, must dereference pointers for this to be called
-///copy/swap implementation doesn't seem practical since not using smart pointers
+///LinkedList's copy constructor is first called on otherList since it's passed by value
+///its variables are then swapped into the left hand list. Then once the function does out of
+///scope the copy with the left hand list's contents is destroyed
     std::cout << "LL assign\n";
-    while(head != nullptr)            //while there are nodes in this list
-        pop_front();                  //delete all of them
+    std::swap(newCalls,otherList.newCalls);
+    std::swap(delCalls,otherList.delCalls);
 
-    Node<T>* node = otherList.head;   //get the other list's head
-
-    while(node != nullptr)            //while the other list has node's in it
-    {  //no need to test isMember here since otherList would have already gone through that process, so call the helper
-        _push_back(node->getData());   //insert the data in those nodes into the this list
-        node = node->getNext();       //move to the next node in the other list
-    }                                 //once all nodes have been copied from the other list
-    return *this;                     //return the modified dereferenced this list
+    std::swap(head,otherList.head);         //swap the head pointer with the copied head pointer
+    std::swap(tail,otherList.tail);         //swap the tail pointer with the copied tail poinrwe
+    std::swap(numNodes,otherList.numNodes); //swap the number of nodes with the copied list
+    return *this;                           //return the modified dereferenced this list
 }
-
 
 template <class T>
 int LinkedList<T>::size()
@@ -117,7 +111,6 @@ bool LinkedList<T>::push_back(const T& data)
         return false;   //dont insert it
     return _push_back(data); //now that we've checked for the node, we can add it
 }
-
 
 template <class T>
 bool LinkedList<T>::_push_back(const T& data)
@@ -320,7 +313,6 @@ void LinkedList<T>::sort() //using quicksort
     _sort(head,tail); //pass in the only two node's we have access too as the starting nodes
 }
 
-
 //recursive call helper function for sorting nodes
 template <class T>
 void LinkedList<T>::_sort(Node<T>* left, Node<T>* right)
@@ -417,19 +409,18 @@ Node<T>* LinkedList<T>::headToIndex(int index)
 template <class T>
 bool LinkedList<T>::first_insert(Node<T>* node)
 {
-    head = node;             //that node is both the head and tail
+    head = node;   //that node is both the head and tail
     tail = node;
-    return true;             //insertion finished
+    return true;   //insertion finished
 }
 
 template <class T>
 bool LinkedList<T>::last_remove()
 {
-    delete head;                  //delete that node
+    delete head;    //delete that node
     delCalls++;
-    head = nullptr;               //set the list's pointers to its starting state
+    head = nullptr; //set the list's pointers to its starting state
     tail = nullptr;
-    numNodes--;                   //decrease the size of the list (should be 0 now)
-    return true;                  //say the node was deleted
+    numNodes--;     //decrease the size of the list (should be 0 now)
+    return true;    //say the node was deleted
 }
-

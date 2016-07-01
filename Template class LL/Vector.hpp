@@ -22,14 +22,19 @@ public:
 ///member functions
     T& at(int index);              //if using a pointer to a vector, use this    RANGE: [0,size()-1]
     int size();                    //getter for numElements; returns the number of elements in the vector
-    void push_back(const T& data); //inserts the data at the back of the vector. Calls resize() if the vector is full
+    //void push_back(const T& data); //inserts the data at the back of the vector. Calls resize() if the vector is full
+    void push_back(T&& data);      //move-based function to put new data at the back
     void pop_back();               // "removes" the data at the back of the vector
     bool empty();                  //returns true if the vector is empty
     void resize(int newCapacity);  //copies the data from calling vector to a new vector with the new capacity
     int capacity();                //getter for how many elements the vector can currently hold (push_back can change this via resize if space is needed)
     void clear();                  //removes all data from the array
+
+    T* begin();
+    T* end();
 ///debug funtions
     void print();
+    void print_iterator();
 
 private:
     T* dynamicArray;   //the array storing the data for vector

@@ -114,8 +114,8 @@ void Vector<T>::resize(int newCapacity)
     if(arrayCapacity == newCapacity)         //if the new size of the array is the same
         return;                              //dont do anything
     T* tempArray = new T [newCapacity];      //creates an instance of an array with the new capacity
-    if(numElements > newCapacity)            //if there is data outside of the new capacity (shrinking an array)
-        numElements = newCapacity;           //ignore it and let the destructor take it out
+    while(numElements > newCapacity)         //if there is data outside of the new capacity (shrinking an array)
+        pop_back();                          //delete it
     for(int i = 0; i < numElements; i++)     //for each element in the original array
         std::swap(tempArray[i],dynamicArray[i]); //swaps the empty data in temp with the placement new data in this array
     int elementCount = numElements;          //temporarily keeps the number of elements here since clear() will reduce this to 0
@@ -144,32 +144,51 @@ int Vector<T>::capacity()
 
 //inserts an element at the back of the vector
 template <class T>
-void Vector<T>::push_back(T&& data)
+void Vector<T>::push_back(const T& data)
 {
-    std::cout << "---push back start &&---\n";
+    std::cout << "---push back start **************---\n";
+
     if(numElements == arrayCapacity)           //if the array is full
         resize(arrayCapacity+arrayCapacity/2); //increase the number of elements it can hold by 1.5
-    dynamicArray[numElements] = T(std::move(data)); //move the new data into the back of the array
+    /*dynamicArray[numElements] = data;*/      ///see below line for placement new way of inserting data into the container
+    new(numElements + dynamicArray) T(std::move(data));   //use "placement new" to put a copy of the data at the back of the array
     numElements++;                             //the size of the array goes up by 1
 
     std::cout << "---push back end---\n";
+    newCalls++;
+}
+
+template <class T>
+void Vector<T>::push_back(T&& data)
+{
+     std::cout << "---push back start &&---\n";
+    if(numElements == arrayCapacity)           //if the array is full
+        resize(arrayCapacity+arrayCapacity/2); //increase the number of elements it can hold by 1.5
+    /*dynamicArray[numElements] = data;*/      ///see below line for placement new way of inserting data into the container
+    new(numElements + dynamicArray) T(std::move(data));   //use "placement new" to put a copy of the data at the back of the array
+    numElements++;                             //the size of the array goes up by 1
+
+    std::cout << "---push back end---\n";
+    newCalls++;
 }
 
 //removes an element from the back of the vector
 template <class T>
 void Vector<T>::pop_back()
-{
- ///moves in default starting T state and lets T's destructor call the old data when pop_back()
- ///goes out of scope
- ///check the copy of this file for placement delete notes...
+{ ///To see this in action, in Data.cpp's destructor, put print() in it.
+  ///When pop_back() is called, the data prints right before it is destroyed
+  ///When the program ends, the destructor prints for any unused vector indexes since
+  ///only the default constructor was used on them.
+  ///The indexes that had data will have undefined behavior, which implies pop_back() does
+  ///delete the data! See "trying_to_access_destoyed_data.png" for example
   std::cout << "---pop back start---\n";
 
     if(empty())                       //if the array is empty
         return;                       //don't do anything
-    //dynamicArray[numElements-1].~T(); //call T's destructor to match the placement new call push_back() made
-    dynamicArray[numElements-1] = T(); ///instead just move in a default T object into the back
+    dynamicArray[numElements-1].~T(); //call T's destructor to match the placement new call push_back() made
     numElements--;                    //we use numElements to get the index for the back data, so decreasing this is sufficient
 
+    delCalls++;
     std::cout << "---pop back end---\n";
 }
 
@@ -225,4 +244,5 @@ void Vector<T>::print_iterator()
         iterator->print();
         counter++;
     }
+
 }

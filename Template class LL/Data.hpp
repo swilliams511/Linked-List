@@ -10,8 +10,12 @@ public:
     Data();                           //default constructor
     Data(int v, std::string n);       //parameter constructor
     ~Data();                          //destructor
-    Data(const Data& otherData);        //copy constructor
-    Data operator=(Data otherData); //assignment operator
+    Data(const Data& otherData);      //copy constructor
+    Data(Data&& otherData);           //move constructor
+    //Data operator=(Data otherData); //copy/swap assignment operator (can replace below 2 overloads_
+///using the below two overloads instead of the one saves 1 move call per assignment
+    Data& operator=(const Data& otherData); //standard assignment operator
+    Data& operator=(Data&& otherData);      //move assignment operator
 ///overloaded for sorting the data
     bool operator<(const Data& otherData);
     bool operator>(const Data& otherData);

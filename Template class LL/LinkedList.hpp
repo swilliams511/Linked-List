@@ -16,7 +16,7 @@ public:
    /* LinkedList() : head(nullptr), tail(nullptr), numNodes(0) {std::cout << "List's constructor\n";}  */
     ~LinkedList();//destructor
     LinkedList(const LinkedList& otherList);//copy constructor
-    LinkedList& operator=(LinkedList& otherList);//overloaded assignment operator
+    LinkedList& operator=(LinkedList otherList);//overloaded assignment operator
 ///member functions
     int size();                      //returns the number of nodes in the list
     bool isMember(const T& data);    //sequential search to lookup if the passed data is in the list
