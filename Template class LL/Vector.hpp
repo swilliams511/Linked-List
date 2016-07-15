@@ -11,6 +11,9 @@ read function and implementation comments for more information
 template <class T>
 class Vector{
 public:
+    typedef T* iterator;
+    typedef const T* const_iterator;
+
 ///structors
     Vector();                           //default constructor
     Vector(int startingSize);           //parameterized constructor
@@ -18,23 +21,29 @@ public:
     Vector(const Vector& otherVector);  //copy constructor
 ///operator overloads
     Vector<T>& operator=(Vector otherVector); //assignment operator
-    T& operator[](int index);                 //access the kth element of a vector. RANGE: [0,size()-1]
+    T& operator[](const int index) const;                 //access the kth element of a vector. RANGE: [0,size()-1]
 ///member functions
-    T& at(int index);              //if using a pointer to a vector, use this    RANGE: [0,size()-1]
-    int size();                    //getter for numElements; returns the number of elements in the vector
-    //void push_back(const T& data); //inserts the data at the back of the vector. Calls resize() if the vector is full
+    T& at(const int index) const;              //if using a pointer to a vector, use this    RANGE: [0,size()-1]
+    int size() const;              //getter for numElements; returns the number of elements in the vector
+    void push_back(const T& data); //inserts the data at the back of the vector. Calls resize() if the vector is full
     void push_back(T&& data);      //move-based function to put new data at the back
     void pop_back();               // "removes" the data at the back of the vector
-    bool empty();                  //returns true if the vector is empty
-    void resize(int newCapacity);  //copies the data from calling vector to a new vector with the new capacity
-    int capacity();                //getter for how many elements the vector can currently hold (push_back can change this via resize if space is needed)
+    bool empty() const;                  //returns true if the vector is empty
+    void resize(const int newCapacity);  //copies the data from calling vector to a new vector with the new capacity
+    int capacity() const;                //getter for how many elements the vector can currently hold (push_back can change this via resize if space is needed)
     void clear();                  //removes all data from the array
-
-    T* begin();
-    T* end();
+    void insert(int index, const T& data); //inserts data at the specified index
+    void insert(int index, T&& data); //same as above but uses move
+    void erase(int index);  //removes the data at the index
+///random access iterators
+    iterator begin();
+    iterator end();
+///constant iterators
+    const_iterator begin() const;
+    const_iterator end() const;
 ///debug funtions
-    void print();
-    void print_iterator();
+    void print() const;
+    void print_iterator() const;
 
 private:
     T* dynamicArray;   //the array storing the data for vector
@@ -45,10 +54,5 @@ private:
     int delCalls;
 
 };
-
-
-
-
-
 
 #endif // _v

@@ -7,7 +7,6 @@
 #include "Vector.cpp"
 #include <iostream>
 #include <string>
-#include <vector>
 
 int main()
 {
@@ -51,18 +50,24 @@ int main()
     array.end()->print();
     array.print_iterator();
 
-    std::cout << "better insert start\n";
     array.push_back(Data(2,"Ivysaur"));
     array.push_back(Data(3,"Ivysaur"));
-
+    array.pop_back();
     array.print();
 
-    array.pop_back();
-
-    Vector<int> intV;
-    intV.push_back(8);
-    std::cout << intV[0] << "\n";
-
+///test of both push_back() types. Shows one uses copy mechanics and other uses move.
+    Data data3(12,"testpoke");
+    array.push_back(data3);
+    array.end()->print();
+    data3.print();
+    Data data4(13,"testpoke69");
+    array.push_back(std::move(data4));
+    array.end()->print();
+    data4.print();
+    array.insert(1,Data(14,"???"));
+    array.print();
+    array.erase(1);
+    array.print();
 
     return 0;
 }

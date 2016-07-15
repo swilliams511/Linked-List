@@ -83,7 +83,7 @@ Vector<T>& Vector<T>::operator=(Vector otherVector)
 
 //bracket operator
 template <class T>
-T& Vector<T>::operator[](int index)
+T& Vector<T>::operator[](const int index) const
 {
     if(index < 0 || index > numElements-1) //will give undefined behavior if empty, returns 0th index
     {                                      //element if the index is out of range [0,size()-1]
@@ -95,7 +95,7 @@ T& Vector<T>::operator[](int index)
 
 //Returns the data at the index, given it't in range. O(1) run time
 template <class T>
-T& Vector<T>::at(int index)
+T& Vector<T>::at(const int index) const
 {
     if(index < 0 || index > numElements-1)
     {
@@ -107,7 +107,7 @@ T& Vector<T>::at(int index)
 
 //copies the data in the vector to a new one with a different capacity
 template <class T>
-void Vector<T>::resize(int newCapacity)
+void Vector<T>::resize(const int newCapacity)
 {
     std::cout << "resizing vector...\n";
 
@@ -118,11 +118,9 @@ void Vector<T>::resize(int newCapacity)
         numElements = newCapacity;           //ignore it and let the destructor take it out
     for(int i = 0; i < numElements; i++)     //for each element in the original array
         std::swap(tempArray[i],dynamicArray[i]); //swaps the empty data in temp with the placement new data in this array
-    int elementCount = numElements;          //temporarily keeps the number of elements here since clear() will reduce this to 0
     delete [] dynamicArray;                  //free the memory that dynamicArray points to
     dynamicArray = tempArray;                //assign dynamicArray pointer to the "new" temp array we created and populated here
     arrayCapacity = newCapacity;             //increases the capacity of the array to the specified value
-    numElements = elementCount;              //update the number of elements in the srray
 
     newCalls++;
     delCalls++;
@@ -130,26 +128,39 @@ void Vector<T>::resize(int newCapacity)
 
 //getter for numElements
 template <class T>
-int Vector<T>::size()
+int Vector<T>::size() const
 {
     return numElements; //simple getter function
 }
 
 //getter for arrayCapacity
 template <class T>
-int Vector<T>::capacity()
+int Vector<T>::capacity() const
 {
     return arrayCapacity;
 }
 
-//inserts an element at the back of the vector
+//inserts an element (copy based) at the back of the vector
+template <class T>
+void Vector<T>::push_back(const T& data)
+{
+    std::cout << "---push back start copy---\n";
+    if(numElements == arrayCapacity)           //if the array is full
+        resize(arrayCapacity+arrayCapacity/2); //increase the number of elements it can hold by 1.5
+    dynamicArray[numElements] = data;       //copy the data into the back index
+    numElements++;                             //the size of the array goes up by 1
+
+    std::cout << "---push back copy end---\n";
+}
+
+//inserts an element (move based) at the back of the vector
 template <class T>
 void Vector<T>::push_back(T&& data)
 {
     std::cout << "---push back start &&---\n";
     if(numElements == arrayCapacity)           //if the array is full
         resize(arrayCapacity+arrayCapacity/2); //increase the number of elements it can hold by 1.5
-    dynamicArray[numElements] = T(std::move(data)); //move the new data into the back of the array
+    dynamicArray[numElements] = std::move(data); //move the new data into the back of the array
     numElements++;                             //the size of the array goes up by 1
 
     std::cout << "---push back end---\n";
@@ -173,9 +184,94 @@ void Vector<T>::pop_back()
     std::cout << "---pop back end---\n";
 }
 
+template <class T>
+void Vector<T>::insert(int index, const T& data)
+{
+    std::cout << "copy insert\n";
+    if(index < 0 || index > numElements) //if the index is out of range
+        return;                          //dont do anything
+    if(index == numElements)             //if the index is the back of the array
+    {
+        push_back(data);                 //let this function do the work
+        return;
+    }
+    if(numElements == arrayCapacity)    //if the array is full
+    { ///instead of calling resize(), the data is inserted during the vector being resized here
+        int newCapacity = arrayCapacity+arrayCapacity/2;
+        T* tempArray = new T [newCapacity];      //creates an instance of an array with the new capacity
+        for(int i = 0; i < numElements+1; i++)     //for each element in the original array
+        {
+            if(i == index) //if we are at the index we want to insert data at
+                tempArray[i] = data; //put it in there
+            else //otherwise
+                std::swap(tempArray[i],dynamicArray[i]); //swaps the empty data in temp with the placement new data in this array
+        }
+        delete [] dynamicArray;                  //free the memory that dynamicArray points to
+        dynamicArray = tempArray;                //assign dynamicArray pointer to the "new" temp array we created and populated here
+        arrayCapacity = newCapacity;             //increases the capacity of the array to the specified value
+        numElements++;                           //update the number of elements in the array
+
+        newCalls++;
+        delCalls++;
+        return;
+    }
+    ///the data is first pushed back. Then it is swapped into the index
+    dynamicArray[numElements] = data;       //copy the data into the back index
+    numElements++;                             //the size of the array goes up by 1
+    for(int i = numElements-1; i > index; --i)
+        std::swap(dynamicArray[i],dynamicArray[i-1]); //swaps the data into its requested index
+}
 
 template <class T>
-bool Vector<T>::empty()
+void Vector<T>::insert(int index, T&& data)
+{
+    std::cout << "move insert\n";
+    if(index < 0 || index > numElements) //if the index is out of range
+        return;                          //dont do anything
+    if(index == numElements)             //if the index is the back of the array
+    {
+        push_back(data);                 //let this function do the work
+        return;
+    }
+    if(numElements == arrayCapacity)    //if the array is full
+    { ///instead of calling resize(), the data is inserted during the vector being resized here
+        int newCapacity = arrayCapacity+arrayCapacity/2;
+        T* tempArray = new T [newCapacity];      //creates an instance of an array with the new capacity
+        for(int i = 0; i < numElements+1; i++)     //for each element in the original array
+        {
+            if(i == index) //if we are at the index we want to insert data at
+                tempArray[i] = std::move(data); //move it in there
+            else //otherwise
+                std::swap(tempArray[i],dynamicArray[i]); //swaps the empty data in temp with the placement new data in this array
+        }
+        delete [] dynamicArray;                  //free the memory that dynamicArray points to
+        dynamicArray = tempArray;                //assign dynamicArray pointer to the "new" temp array we created and populated here
+        arrayCapacity = newCapacity;             //increases the capacity of the array to the specified value
+        numElements++;                           //update the number of elements in the array
+
+        newCalls++;
+        delCalls++;
+        return;
+    }
+    ///the data is first pushed back. Then it is swapped into the index
+    dynamicArray[numElements] = std::move(data);       //move the data into the back index
+    numElements++;                             //the size of the array goes up by 1
+    for(int i = numElements-1; i > index; --i)
+        std::swap(dynamicArray[i],dynamicArray[i-1]); //swaps the data into its requested index
+}
+
+template <class T>
+void Vector<T>::erase(int index)
+{ ///implemented as the opposite of insert
+    if(index < 0 || index > numElements-1 || empty()) //if the index is bad or the array is empty
+        return;                                       //dont do anything
+    for (int i = index; i < numElements-1; ++i)       //starting with the indexed data
+        std::swap(dynamicArray[i],dynamicArray[i+1]); //swap it into the last index
+    pop_back();                                       //since the data we want to remove is last, we can pop it now
+}
+
+template <class T>
+bool Vector<T>::empty() const
 {
     if(numElements == 0) //if there are no elements in the array
         return true;     //then its empty
@@ -190,19 +286,31 @@ void Vector<T>::clear()
 }
 
 template <class T>
-T* Vector<T>::begin()
+typename Vector<T>::iterator Vector<T>::begin()
 {
     return dynamicArray;
 }
 
 template <class T>
-T* Vector<T>::end()
+typename Vector<T>::const_iterator Vector<T>::begin() const
+{
+    return dynamicArray;
+}
+
+template <class T>
+typename Vector<T>::iterator Vector<T>::end()
 {
     return dynamicArray + numElements - 1;
 }
 
 template <class T>
-void Vector<T>::print()
+typename Vector<T>::const_iterator Vector<T>::end() const
+{
+    return dynamicArray + numElements - 1;
+}
+
+template <class T>
+void Vector<T>::print() const
 {
     std::cout << "***Contents of vector***\n";
     std::cout << "size: " << numElements << "   capacity: " << arrayCapacity << "\n";
@@ -214,12 +322,12 @@ void Vector<T>::print()
 }
 
 template <class T>
-void Vector<T>::print_iterator()
+void Vector<T>::print_iterator() const
 {
     std::cout << "***Contents of vector (using iterator)***\n";
     std::cout << "size: " << numElements << "   capacity: " << arrayCapacity << "\n";
     int counter = 0;
-    for(T* iterator = begin(); iterator != end()+1; iterator++)
+    for(const T* iterator = begin(); iterator != end()+1; iterator++)
     {
         std::cout << "\"" << counter << "th\" index at address: " << iterator << " holds: ";
         iterator->print();

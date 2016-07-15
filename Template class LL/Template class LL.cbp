@@ -32,15 +32,19 @@
 			<Add option="-std=c++11" />
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Array.cpp" />
+		<Unit filename="Array.hpp" />
 		<Unit filename="Data.cpp" />
 		<Unit filename="Data.hpp" />
+		<Unit filename="Deque.cpp" />
+		<Unit filename="Deque.hpp" />
 		<Unit filename="LinkedList.cpp" />
 		<Unit filename="LinkedList.hpp" />
 		<Unit filename="Node.cpp" />
 		<Unit filename="Node.hpp" />
 		<Unit filename="Vector.cpp" />
 		<Unit filename="Vector.hpp" />
-		<Unit filename="main2.cpp" />
+		<Unit filename="main3.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

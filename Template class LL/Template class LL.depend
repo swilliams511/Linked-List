@@ -20,10 +20,10 @@
 1466127101 source:c:\users\scott williams\desktop\linked list\template class ll\node.cpp
 	"Node.hpp"
 
-1467344728 source:c:\users\scott williams\desktop\linked list\template class ll\data.cpp
+1468470064 source:c:\users\scott williams\desktop\linked list\template class ll\data.cpp
 	"Data.hpp"
 
-1467345295 c:\users\scott williams\desktop\linked list\template class ll\data.hpp
+1467436938 c:\users\scott williams\desktop\linked list\template class ll\data.hpp
 	<string>
 	<iostream>
 
@@ -41,16 +41,16 @@
 1466311039 source:c:\users\scott williams\desktop\linked list\template class ll\twodarray.cpp
 	"TwoDArray.hpp"
 
-1467346604 c:\users\scott williams\desktop\linked list\template class ll\vector.hpp
+1468267329 c:\users\scott williams\desktop\linked list\template class ll\vector.hpp
 	<iostream>
 
-1467346604 c:\users\scott williams\desktop\linked list\template class ll\vector.cpp
+1468266619 c:\users\scott williams\desktop\linked list\template class ll\vector.cpp
 	"Vector.hpp"
 
-1467346481 source:c:\users\scott williams\desktop\linked list\template class ll\vector.cpp
+1468266619 source:c:\users\scott williams\desktop\linked list\template class ll\vector.cpp
 	"Vector.hpp"
 
-1467346521 source:c:\users\scott williams\desktop\linked list\template class ll\main2.cpp
+1467778011 source:c:\users\scott williams\desktop\linked list\template class ll\main2.cpp
 	"Node.hpp"
 	"Node.cpp"
 	"Data.hpp"
@@ -61,4 +61,37 @@
 	<iostream>
 	<string>
 	<vector>
+
+1468540294 source:c:\users\scott williams\desktop\linked list\template class ll\main3.cpp
+	"Node.hpp"
+	"Node.cpp"
+	"Data.hpp"
+	"LinkedList.hpp"
+	"LinkedList.cpp"
+	"Vector.hpp"
+	"Vector.cpp"
+	"Deque.hpp"
+	"Deque.cpp"
+	"Array.hpp"
+	"Array.cpp"
+	<iostream>
+	<string>
+
+1468541414 c:\users\scott williams\desktop\linked list\template class ll\deque.hpp
+	<iostream>
+
+1468541414 c:\users\scott williams\desktop\linked list\template class ll\deque.cpp
+	"Deque.hpp"
+
+1468541414 source:c:\users\scott williams\desktop\linked list\template class ll\deque.cpp
+	"Deque.hpp"
+
+1468351131 c:\users\scott williams\desktop\linked list\template class ll\array.hpp
+	<iostream>
+
+1468467681 c:\users\scott williams\desktop\linked list\template class ll\array.cpp
+	"Array.hpp"
+
+1468467681 source:c:\users\scott williams\desktop\linked list\template class ll\array.cpp
+	"Array.hpp"
 

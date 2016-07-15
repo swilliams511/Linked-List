@@ -17,20 +17,20 @@ public:
     Data& operator=(const Data& otherData); //standard assignment operator
     Data& operator=(Data&& otherData);      //move assignment operator
 ///overloaded for sorting the data
-    bool operator<(const Data& otherData);
-    bool operator>(const Data& otherData);
+    bool operator<(const Data& otherData) const;
+    bool operator>(const Data& otherData) const;
 ///overloaded for finding specified data
-    bool operator==(const Data& otherData);
-    bool operator!=(const Data& otherData);
+    bool operator==(const Data& otherData) const;
+    bool operator!=(const Data& otherData) const;
 
     //getters/setters for private variables. Shouldn't appear in other class implementation (only main)
     //or specified print functions
-    int getValue() {return value;}
+    int getValue() const {return value;}
     void setValue(int v) {value = v;}
-    std::string getName() {return name;}
+    std::string getName() const {return name;}
     void setName(std::string n) {name = n;}
 
-    void print();
+    void print() const;
 
 private:
     //private variables

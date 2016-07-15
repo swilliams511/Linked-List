@@ -3,7 +3,7 @@
 
 Data::Data()
 {
-    std::cout << "Data's constructor called\n";
+    //std::cout << "Data's constructor called\n";
     value = 0;
     name = "";
 }
@@ -71,31 +71,31 @@ Data& Data::operator=(Data&& otherData)
 //    return *this;    //returns the dereferenced data
 //}
 
-bool Data::operator<(const Data& otherData)
+bool Data::operator<(const Data& otherData) const
 {
     if(value < otherData.value)  //this data type compares which data is bigger based off value
         return true;             //value is an int so int's "<" works here
     return false;
 }
 
-bool Data::operator>(const Data& otherData)
+bool Data::operator>(const Data& otherData) const
 {
     return !(*this < otherData); //opposite of < operator
 }
 
-bool Data::operator==(const Data& otherData)
+bool Data::operator==(const Data& otherData) const
 {
     if(name == otherData.name && value == otherData.value) //the data type is the name if
         return true;   //both the name and value compare using string and int's "=="
     return false;
 }
 
-bool Data::operator!=(const Data& otherData)
+bool Data::operator!=(const Data& otherData) const
 {
     return !(*this == otherData); //opposite of == operator
 }
 
-void Data::print()
+void Data::print() const
 {
     std::cout << "#" << value << " - " << name << "\n";
 }
