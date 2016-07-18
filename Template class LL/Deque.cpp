@@ -33,6 +33,41 @@ Deque<T>::~Deque()
     std::cout << "destr end\n";
 }
 
+template <class T>
+Deque<T>::Deque(const Deque& otherDeque)
+{
+    mapCapacity = otherDeque.mapCapacity;
+    numElements = 0;                                  //the deque starts out empty
+    map = new char* [mapCapacity];                    //create a map which holds pointers
+    for(size_t i = 0; i < mapCapacity; ++i)           //for each of these pointers
+        map[i] = new char[sizeof(T) * chunkCapacity]; //let them point to a fixed size chunk which holds individual data elements
+    //copy all the index based variables from other
+    first_map_index = otherDeque.first_map_index;
+    last_map_index = otherDeque.last_map_index;
+    empty_left = otherDeque.empty_left;
+    empty_right = otherDeque.empty_right;
+    for(size_t i = 0; i < otherDeque.numElements; ++i)
+    { //in order to create an "identical" deque, each element from other is copied using the "at()" formula to decide where to call placement new
+      //trying to use push_back made this complicated, but this solution gets the job done
+        int key = first_map_index*chunkCapacity+i+empty_left;                //this formula calculates the requested data
+        new(reinterpret_cast<T**>(map)[key/chunkCapacity] + key%chunkCapacity) T(otherDeque.at(i)); //places the appropriate data in the appropriate spot
+        ++numElements;
+    }
+}
+
+template <class T>
+Deque<T>& Deque<T>::operator=(Deque otherDeque)
+{
+    //every private variable is swapped with a copy of the other deque. Destructor takes out copy with old data when function ends
+    std::swap(map,otherDeque.map);
+    std::swap(mapCapacity,otherDeque.mapCapacity);
+    std::swap(numElements,otherDeque.numElements);
+    std::swap(empty_left,otherDeque.empty_left);
+    std::swap(empty_right,otherDeque.empty_right);
+    std::swap(first_map_index,otherDeque.first_map_index);
+    std::swap(last_map_index,otherDeque.last_map_index);
+    return *this;
+}
 
 template <class T>
 T& Deque<T>::at(const size_t index) const
@@ -45,7 +80,6 @@ T& Deque<T>::at(const size_t index) const
     int key = first_map_index*chunkCapacity+index+empty_left;                //this formula calculates the requested data
     return reinterpret_cast<T**>(map)[key/chunkCapacity][key%chunkCapacity]; //change the map pointer to a T pointer
 }
-
 
 template <class T>
 void Deque<T>::first_insert(const T& data)
@@ -113,6 +147,45 @@ void Deque<T>::push_back(T&& data)
     ++numElements;                             //the number of data goes up by one
 }
 
+template <class T>
+void Deque<T>::push_front(const T& data)
+{
+    if(numElements == 0)                       //if no elements have been inserted
+    {
+        first_insert(data);                    //insert the data using this
+        return;
+    }
+    if(empty_left == 0)                       //if the current chunk is full
+    {
+        if(first_map_index == 0)  //if the outer array is full at the front
+            resize_front();                   //add more space at the front
+        --first_map_index;                    //move to the previous chunk since the current one is full
+        empty_left = chunkCapacity;           //since the chunk is empty, set this to how many elements can fit in the chunk
+    }
+    new(reinterpret_cast<T**>(map)[first_map_index] + empty_left-1) T(data);
+    --empty_left;     //since there is 1 more data in front, there is one less space in the chunk
+    ++numElements;     //the number of data goes up by one
+}
+
+template <class T>
+void Deque<T>::push_front(T&& data)
+{
+    if(numElements == 0)                       //if no elements have been inserted
+    {
+        first_insert(std::move(data));                    //insert the data using this
+        return;
+    }
+    if(empty_left == 0)                       //if the current chunk is full
+    {
+        if(first_map_index == 0)  //if the outer array is full at the front
+            resize_front();                   //add more space at the front
+        --first_map_index;                    //move to the previous chunk since the current one is full
+        empty_left = chunkCapacity;           //since the chunk is empty, set this to how many elements can fit in the chunk
+    }
+    new(reinterpret_cast<T**>(map)[first_map_index] + empty_left-1) T(std::move(data));
+    --empty_left;     //since there is 1 more data in front, there is one less space in the chunk
+    ++numElements;     //the number of data goes up by one
+}
 
 template <class T>
 void Deque<T>::pop_back()
@@ -137,7 +210,6 @@ void Deque<T>::clear()
         pop_back();
 }
 
-
 template <class T>
 size_t Deque<T>::size() const
 {
@@ -149,7 +221,6 @@ bool Deque<T>::empty() const
 {
     return numElements == 0;
 }
-
 
 template <class T>
 void Deque<T>::print() const
@@ -166,12 +237,6 @@ void Deque<T>::print() const
     std::cout << "\n";
 }
 
-
-
-
-
-
-
 template<class T>
 void Deque<T>::resize_back()
 {
@@ -185,6 +250,26 @@ void Deque<T>::resize_back()
     delete [] map;                                          //since map no longer has ownership of its pointers, we dont need to delete them, but we need to delete map
     map = tempMap;                                          //assign the temp map to the map pointer
 }
+
+template <class T>
+void Deque<T>::resize_front()
+{
+    std::cout << "front resize\n";
+    size_t oldCapacity = mapCapacity;
+    mapCapacity *= resizeConstant;                              //increase the map's capacity
+    size_t shift = mapCapacity-oldCapacity;                     //how far the original chunks will move
+    char** tempMap = new char* [mapCapacity];                   //create a new map with the updated capacity
+    for (size_t i = 0; i < shift; ++i)                          //at the start of the temp map
+        tempMap[i] = new char[sizeof(T) * chunkCapacity];       //create the new chunks to fill the temp map's capacity up
+    for (size_t i = first_map_index; i < last_map_index+1; ++i) //for each of the chunks in the map after the chunks already created
+        tempMap[i+shift] = map[i];                              //give ownership of the pointers to the temp map
+    first_map_index = shift;                                    //update the index variables since there are new chinks in the front
+    last_map_index += shift;
+    delete [] map;                                              //since map no longer has ownership of its pointers, we dont need to delete them, but we need to delete map
+    map = tempMap;
+}
+
+
 
 /*
 static const int chunkCapacity = 5;  //for this implementation, this must be an odd number. Starting with a small number for testing
@@ -296,25 +381,7 @@ void Deque<T>::push_back(T&& data)
     ++numElements;     //the number of data goes up by one
 }
 
-template <class T>
-void Deque<T>::push_front(const T& data)
-{
-    if(numElements == 0)                       //if no elements have been inserted
-    {
-        first_insert(data);                    //insert the data using this
-        return;
-    }
-    if(empty_left == 0)                       //if the current chunk is full
-    {
-        if(first_map_index == 0)  //if the outer array is full at the front
-            resize_front();                     //add more space at the front
-        --first_map_index;                      //move to the previous chunk since the current one is full
-        empty_left = chunkCapacity;           //since the chunk is empty, set this to how many elements can fit in the chunk
-    }
-    dynamicArray[first_map_index][empty_left-1] = data; //insert the data at the front index
-    --empty_left;     //since there is 1 more data in front, there is one less space in the chunk
-    ++numElements;     //the number of data goes up by one
-}
+
 
 template <class T>
 void Deque<T>::push_front(T&& data)

@@ -15,6 +15,8 @@ class Deque{
 public:
     Deque();
     ~Deque();
+    Deque(const Deque& otherDeque);
+    Deque& operator=(Deque otherDeque);
 
     T& operator[](const size_t index) const;   //access the kth element of a vector. RANGE: [0,size()-1]
     T& at(size_t index) const;           //if using a pointer, use this    RANGE: [0,size()-1]

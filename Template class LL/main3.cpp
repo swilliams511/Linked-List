@@ -59,6 +59,25 @@ int main()
     dq.push_back(Data(4,"other"));
     dq.print();
 
+    std::cout << "ehrstghdxghdfhdghdfghdfhdfghdh\n";
+    Deque<Data> dq2(dq);
+    dq2.push_back(Data(12,"eek"));
+    dq2.print();
+    dq2.push_front(Data(123,"hi"));
+    dq2.push_front(Data(122,"hi"));
+    dq2.push_front(Data(121,"hi"));
+    dq2.push_front(Data(120,"hi"));
+    dq2.push_front(Data(119,"hi"));
+    dq2.push_front(Data(118,"hi"));
+    dq2.push_front(Data(117,"hi"));
+    dq2.push_front(Data(116,"hi"));
+    dq2.push_front(Data(115,"hi"));
+
+
+
+
+    dq2.print();
+
 
     return 0;
 }
