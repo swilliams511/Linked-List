@@ -11,6 +11,60 @@ class Deque{
     static const size_t chunkCapacity = 5;  //for this implementation, this must be an odd number. Starting with a small number for testing
     static const size_t startMapCapacity = 3; //we'll just start out with 3 inner array for now... this can grow
     const float resizeConstant = 2;    //where mapCapacity *= resizeConstant in resize
+public:
+    ///Nested iterator class. Since the iterator class is the inner class, a pointer to the outer deque
+    ///needs to be passed when the iterator is constructed. Then getter functions must be called
+    ///to access the deque's private variables (which are important to some overload functions...)
+    class Iterator{
+    public:
+        Iterator(T* data, size_t index, Deque* deque);
+
+        //Iterator(const Iterator& otherIterator);
+        //Iterator operator=(Iterator otherIterator);
+        T* operator->() const {return itr_data;}
+        T& operator*() const {return *itr_data;}
+        Iterator operator+(int value);
+        Iterator operator-(int value);
+        Iterator operator+=(int value);
+        Iterator operator-=(int value);
+        Iterator operator++();
+        Iterator operator++(int);
+        Iterator operator--();
+        Iterator operator--(int);
+        bool operator==(const Iterator& otherIterator) const;
+        bool operator!=(const Iterator& otherIterator) const;
+
+
+    private:
+        Deque* owner;
+        T* itr_data;
+        size_t itr_index;
+
+    };
+
+    class const_Iterator{
+    public:
+        const_Iterator(T* data, size_t index, const Deque* deque);
+
+        //const_Iterator(const const_Iterator& otherIterator);
+        //const_Iterator operator=(const_Iterator otherIterator);
+        const T* operator->()const {return itr_data;}
+        const T& operator*()const {return *itr_data;}
+        const_Iterator operator+(int value);
+        const_Iterator operator-(int);
+        const_Iterator operator++();
+        const_Iterator operator++(int);
+        const_Iterator operator--();
+        const_Iterator operator--(int);
+        bool operator==(const const_Iterator& otherIterator) const;
+        bool operator!=(const const_Iterator& otherIterator) const;
+
+    private:
+        const Deque* owner;
+        const T* itr_data;
+        size_t itr_index;
+
+    };
 
 public:
     Deque();
@@ -18,7 +72,8 @@ public:
     Deque(const Deque& otherDeque);
     Deque& operator=(Deque otherDeque);
 
-    T& operator[](const size_t index) const;   //access the kth element of a vector. RANGE: [0,size()-1]
+    T& operator[](const size_t index);   //access the kth element of a vector. RANGE: [0,size()-1]
+    const T& operator[](const size_t index) const;
     T& at(size_t index) const;           //if using a pointer, use this    RANGE: [0,size()-1]
     size_t size() const;
     bool empty() const;
@@ -29,11 +84,22 @@ public:
     void push_front(T&& data);          //move-based function to put new data at the front
 
     void pop_back();
+    void pop_front();
     void clear();
+
+    Iterator begin();
+    const_Iterator const_begin() const;
+    Iterator end();
 
 
     void print() const;
     void print_index() const;
+
+    char** get_map() const {return map;}
+    size_t get_first_map_index() const {return first_map_index;}
+    size_t get_last_map_index() const {return last_map_index;}
+    size_t get_empty_left() const {return empty_left;}
+    size_t get_empty_right() const {return empty_right;}
 private:
     char** map;
     size_t mapCapacity;

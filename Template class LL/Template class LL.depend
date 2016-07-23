@@ -62,7 +62,7 @@
 	<string>
 	<vector>
 
-1468814301 source:c:\users\scott williams\desktop\linked list\template class ll\main3.cpp
+1469311379 source:c:\users\scott williams\desktop\linked list\template class ll\main3.cpp
 	"Node.hpp"
 	"Node.cpp"
 	"Data.hpp"
@@ -77,13 +77,13 @@
 	<iostream>
 	<string>
 
-1468791066 c:\users\scott williams\desktop\linked list\template class ll\deque.hpp
+1469311632 c:\users\scott williams\desktop\linked list\template class ll\deque.hpp
 	<iostream>
 
-1468814830 c:\users\scott williams\desktop\linked list\template class ll\deque.cpp
+1469311447 c:\users\scott williams\desktop\linked list\template class ll\deque.cpp
 	"Deque.hpp"
 
-1468814148 source:c:\users\scott williams\desktop\linked list\template class ll\deque.cpp
+1469311616 source:c:\users\scott williams\desktop\linked list\template class ll\deque.cpp
 	"Deque.hpp"
 
 1468351131 c:\users\scott williams\desktop\linked list\template class ll\array.hpp

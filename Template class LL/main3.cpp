@@ -76,6 +76,20 @@ int main()
 
 
 
+
+    dq2.print();
+
+    dq2.begin()->print();
+    Data t = *dq2.begin();
+    t.print();
+    Deque<Data>::Iterator itr = dq2.begin();
+    itr += 10;
+    itr->print();
+
+
+    std::cout << "for loop iterator test\n";
+    for(Deque<Data>::Iterator it = dq2.begin(); it != dq2.end(); ++it)
+        it->print();
     dq2.print();
 
 

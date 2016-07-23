@@ -82,6 +82,13 @@ T& Deque<T>::at(const size_t index) const
 }
 
 template <class T>
+T& Deque<T>::operator[](const size_t index)
+{
+    int key = first_map_index*chunkCapacity+index+empty_left;                //this formula calculates the requested data
+    return reinterpret_cast<T**>(map)[key/chunkCapacity][key%chunkCapacity]; //change the map pointer to a T pointer
+}
+
+template <class T>
 void Deque<T>::first_insert(const T& data)
 {   //initialize these variables when data is first inserted into the deque
     empty_left = chunkCapacity/2 + 1;              //not an index, so add 1
@@ -152,12 +159,12 @@ void Deque<T>::push_front(const T& data)
 {
     if(numElements == 0)                       //if no elements have been inserted
     {
-        first_insert(data);                    //insert the data using this
+        first_insert(data);                   //insert the data using this
         return;
     }
     if(empty_left == 0)                       //if the current chunk is full
     {
-        if(first_map_index == 0)  //if the outer array is full at the front
+        if(first_map_index == 0)              //if the outer array is full at the front
             resize_front();                   //add more space at the front
         --first_map_index;                    //move to the previous chunk since the current one is full
         empty_left = chunkCapacity;           //since the chunk is empty, set this to how many elements can fit in the chunk
@@ -170,14 +177,14 @@ void Deque<T>::push_front(const T& data)
 template <class T>
 void Deque<T>::push_front(T&& data)
 {
-    if(numElements == 0)                       //if no elements have been inserted
+    if(numElements == 0)                      //if no elements have been inserted
     {
-        first_insert(std::move(data));                    //insert the data using this
+        first_insert(std::move(data));        //insert the data using this
         return;
     }
     if(empty_left == 0)                       //if the current chunk is full
     {
-        if(first_map_index == 0)  //if the outer array is full at the front
+        if(first_map_index == 0)              //if the outer array is full at the front
             resize_front();                   //add more space at the front
         --first_map_index;                    //move to the previous chunk since the current one is full
         empty_left = chunkCapacity;           //since the chunk is empty, set this to how many elements can fit in the chunk
@@ -201,6 +208,22 @@ void Deque<T>::pop_back()
         return;
     }                                //otherwise
     ++empty_right;                   //there is now one less element it the current chunk
+}
+
+template <class T>
+void Deque<T>::pop_front()
+{
+    if(empty())                      //if there is nothing in the deque
+        return;                      //cant delete anything
+    at(0).~T();          //call the destructor for the data at the back of the deque
+    --numElements;                   //there is now 1 less element
+    if(empty_right == chunkCapacity) //if the current chunk now has no elements left in it
+    {
+        ++first_map_index;           //move to the prior chunk which will have data
+        empty_left = 0;              //start at the left most element in the chunk
+        return;
+    }                                //otherwise
+    ++empty_left;                    //there is now one less element it the current chunk
 }
 
 template <class T>
@@ -269,154 +292,182 @@ void Deque<T>::resize_front()
     map = tempMap;
 }
 
-
-
-/*
-static const int chunkCapacity = 5;  //for this implementation, this must be an odd number. Starting with a small number for testing
-static const int startArrayCapacity = 3; //we'll just start out with 3 inner array for now... this can grow
-
 template <class T>
-Deque<T>::Deque()
+typename Deque<T>::Iterator Deque<T>::begin()
 {
-    arrayCapacity = startArrayCapacity;
-    dynamicArray = new T* [arrayCapacity];         //create a pointer to an array of pointers
-    for(int i = 0; i < arrayCapacity; ++i)         //for each index in the outer array
-        dynamicArray[i] = new T [chunkCapacity];   //assign each of those pointers a new array
-    numElements = 0;                               //there is no data to start out with
-    empty_left = chunkCapacity/2 + 1;              //not an index, so add 1
-    empty_right = chunkCapacity/2 + 1;             //"   "
-    first_map_index = arrayCapacity/2;
-    last_map_index = arrayCapacity/2;
+    int index = 0;
+    int key = first_map_index*chunkCapacity+index+empty_left;                //this formula calculates the requested data
+    return Iterator(reinterpret_cast<T**>(map)[key/chunkCapacity]+key%chunkCapacity,index,this); //change the map pointer to a T pointer
 }
 
 template <class T>
-Deque<T>::~Deque()
+typename Deque<T>::const_Iterator Deque<T>::const_begin() const
 {
-    for(int i = 0; i < arrayCapacity; ++i) //first...
-        delete [] dynamicArray[i];         //delete each inner array (chunk)
-    delete [] dynamicArray;                //then delete the outer array (map)
+    int index = 0;
+    int key = first_map_index*chunkCapacity+index+empty_left;                //this formula calculates the requested data
+    return const_Iterator(reinterpret_cast<T**>(map)[key/chunkCapacity]+key%chunkCapacity,index,this); //change the map pointer to a T pointer
 }
 
 template <class T>
-T& Deque<T>::operator[](const int index) const
-{
-    ///first index is key/cap using int division. 2nd index is the remainder of key/cap
-    int key = first_map_index*chunkCapacity+index+empty_left;   //using these values, we can
-    return dynamicArray[key/chunkCapacity][key%chunkCapacity];  //compute where the index corresponds to
+typename Deque<T>::Iterator Deque<T>::end()
+{ //c++ standard says this should return an iterator to the past-the-end element in the container
+    int index = numElements; //past-the-end element (dont dereference otherwise undefined behavior)
+    int key = first_map_index*chunkCapacity+index+empty_left;                //this formula calculates the requested data
+    return Iterator(reinterpret_cast<T**>(map)[key/chunkCapacity]+key%chunkCapacity,index,this); //change the map pointer to a T pointer
 }
 
 
 
 
+
+
+
+
+///******Iterator function implementations******
 template <class T>
-void Deque<T>::first_insert(const T& data)
+Deque<T>::Iterator::Iterator(T* data, size_t index, Deque* deque)
 {
-    dynamicArray[first_map_index][chunkCapacity/2] = data; //insert the first data in the middle index of the middle array
-    numElements++;                                         //number of elements goes up
-    --empty_left;    //now the two empty vars each have one less empty slot
-    --empty_right;
+//creates a starting iterator based on the passed data pointer (should be begin() or end() pointer)
+    itr_data = data;     //holds the pointer to the data
+    itr_index = index;   //used for calculations and keeping track of where in the deque we are
+    owner = deque;       //because the iterator class is nested, a pointer to the deque must be passed
 }
 
 
 
 template <class T>
-void Deque<T>::resize_back()
+typename Deque<T>::Iterator Deque<T>::Iterator::operator+(int value)
 {
-    std::cout << "back resize\n";
-    int temp = arrayCapacity;                    //holds the old value for when we delete the old array
-    arrayCapacity = arrayCapacity*2;             //increases the capacity of the array by 2x
-    T** tempArray = new T* [arrayCapacity];      //creates an instance of an array (map) with 2x more inner array
-    for(int i = 0; i < arrayCapacity; ++i)       //creates the new chunks in the map
-        tempArray[i] = new T [chunkCapacity];
-    for(int i = first_map_index; i < last_map_index+1; ++i)     //for each element in the original array
-        std::swap(tempArray[i],dynamicArray[i]);  //swap the empty chunk in temp with the old chunk in this index of the map
-    for(int i = 0; i < temp; ++i)
-        delete [] dynamicArray[i];                //delete each inner array (chunk)
-    delete [] dynamicArray;                       //free the memory that dynamicArray points to (map)
-    dynamicArray = tempArray;                     //assign dynamicArray pointer to the "new" temp array we created and populated here
-    std::cout << "end of resize\n";
-}
-
-template <class T>
-void Deque<T>::resize_front()
-{
-    ///a new array with double the elements is created. Half of those are newly created chunks
-    ///because we want the first half of chunks to be empty, we start swapping in data at the
-    ///i + old array capacity position
-    std::cout << "front resize\n";
-    int temp = arrayCapacity;                    //holds the old value for when we delete the old array
-    arrayCapacity = arrayCapacity*2;             //increases the capacity of the array by 2x
-    T** tempArray = new T* [arrayCapacity];      //creates an instance of an array (map) with 2x more inner array
-    for(int i = 0; i < arrayCapacity; ++i)       //creates the new chunks in the map
-        tempArray[i] = new T [chunkCapacity];
-    for(int i = first_map_index; i < last_map_index+1; ++i)     //for each element in the original array
-        std::swap(tempArray[i+temp],dynamicArray[i]);  //swap the empty chunk in temp with the old chunk in this index of the map
-    for(int i = 0; i < temp; ++i)
-        delete [] dynamicArray[i];                //delete each inner array (chunk)
-    delete [] dynamicArray;                       //free the memory that dynamicArray points to (map)
-    dynamicArray = tempArray;                     //assign dynamicArray pointer to the "new" temp array we created and populated here
-    first_map_index = temp;                      //arrayCapacity chunks are inserted at the front so move first index
-    std::cout << "end of resize\n";
-}
-
-
-
-template <class T>
-void Deque<T>::push_back(T&& data)
-{
-    if(numElements == 0)                       //if no elements have been inserted
+    Iterator temp = *this;
+    temp.itr_index += value;
+    if(temp.itr_index > owner->size()) //checks to make sure data outside the deque isnt accessed
     {
-        first_insert(std::move(data));         //insert the data using this (move based tho)
-        return;
+        std::cout << "Iterator index too high, not changing anything\n";
+        return *this;
     }
-    if(empty_right == 0)                       //if the current chunk is full
-    {
-        if(last_map_index+1 == arrayCapacity)  //if the outer array is full at the end
-            resize_back();                     //add more space at the end
-        ++last_map_index;                      //move to the next chunk since the current one is full
-        empty_right = chunkCapacity;           //since the chunk is empty, set this to how many elements can fit in the chunk
-    }
-    dynamicArray[last_map_index][chunkCapacity-empty_right] = std::move(data); //move the data at the back index
-    --empty_right;     //since there is 1 more data in back, there is one less space in the chunk
-    ++numElements;     //the number of data goes up by one
+    int key = owner->get_first_map_index()*chunkCapacity+temp.itr_index+owner->get_empty_left();  //using the at() formula to calculate where the data is                //this formula calculates the requested data
+    temp.itr_data = reinterpret_cast<T**>(owner->get_map())[key/chunkCapacity]+key%chunkCapacity; //updates the pointer to the new index value
+    return temp;
 }
-
-
 
 template <class T>
-void Deque<T>::push_front(T&& data)
+typename Deque<T>::Iterator Deque<T>::Iterator::operator-(int value)
 {
-    if(numElements == 0)                       //if no elements have been inserted
+    if((int)itr_index-value < 0)     //after casting itr_index to an int, if the difference is negative
     {
-        first_insert(data);                    //insert the data using this
-        return;
+        std::cout << std::cout << "Iterator index too low, not changing anything\n";
+        return *this;                //dont do anything
     }
-    if(empty_left == 0)                       //if the current chunk is full
-    {
-        if(first_map_index == 0)  //if the outer array is full at the front
-            resize_front();                     //add more space at the front
-        --first_map_index;                      //move to the previous chunk since the current one is full
-        empty_left = chunkCapacity;           //since the chunk is empty, set this to how many elements can fit in the chunk
-    }
-    dynamicArray[first_map_index][empty_left-1] = std::move(data); //insert the data at the front index
-    --empty_left;     //since there is 1 more data in front, there is one less space in the chunk
-    ++numElements;     //the number of data goes up by one
+    return *this + (-value);
 }
-
-
-
-
 
 template <class T>
-void Deque<T>::print_index() const
+typename Deque<T>::Iterator Deque<T>::Iterator::operator+=(int value)
 {
-    std::cout << "***Deque only looking at indexes with data***\n";
-    for(int i = 0; i < numElements; ++i)
+//plus overload, used to shift to a data pointer by "value" places.
+    itr_index += value;             //increases the index by the rhs
+    if(itr_index > owner->size()) //checks to make sure data outside the deque isnt accessed
     {
-        std::cout << "\"" << i << "th\" index: ";
-        at(i).print();
+        std::cout << "Iterator index too high, not changing anything\n";
+        return *this;
     }
-
-    std::cout << "\n";
+    int key = owner->get_first_map_index()*chunkCapacity+itr_index+owner->get_empty_left();  //using the at() formula to calculate where the data is                //this formula calculates the requested data
+    itr_data = reinterpret_cast<T**>(owner->get_map())[key/chunkCapacity]+key%chunkCapacity; //updates the pointer to the new index value
+    return *this;                                                                            //returns the iterator
 }
-*/
+
+template <class T>
+typename Deque<T>::Iterator Deque<T>::Iterator::operator-=(int value)
+{
+    if((int)itr_index-value < 0)     //after casting itr_index to an int, if the difference is negative
+    {
+        std::cout << std::cout << "Iterator index too low, not changing anything\n";
+        return *this;                //dont do anything
+    }
+    return *this += (-value);         //let operator+ do the work with the negative of value
+}
+
+template <class T>
+typename Deque<T>::Iterator Deque<T>::Iterator::operator++()
+{
+    return *this += 1;
+}
+
+template <class T>
+typename Deque<T>::Iterator Deque<T>::Iterator::operator++(int)
+{
+    Iterator* temp = this;
+    ++(*this);
+    return *temp;
+}
+
+template <class T>
+typename Deque<T>::Iterator Deque<T>::Iterator::operator--()
+{
+    return *this -= 1;
+}
+
+template <class T>
+typename Deque<T>::Iterator Deque<T>::Iterator::operator--(int)
+{
+    Iterator* temp = this;
+    --(*this);
+    return temp;
+}
+
+template <class T>
+bool Deque<T>::Iterator::operator==(const Iterator& otherIterator) const
+{
+    return itr_data == otherIterator.itr_data;
+}
+
+template <class T>
+bool Deque<T>::Iterator::operator!=(const Iterator& otherIterator) const
+{
+    return !(*this == otherIterator);
+}
+
+///******
+
+
+
+
+
+///******const_Iterator function implementations******
+///All of it is the same as the above iterator, but it's const so the data that's pointed to can't
+///be modified
+template <class T>
+Deque<T>::const_Iterator::const_Iterator(T* data, size_t index, const Deque* deque)
+{
+//creates a starting iterator based on the passed data pointer (should be begin() or end() pointer)
+    itr_data = data;     //holds the pointer to the data
+    itr_index = index;   //used for calculations and keeping track of where in the deque we are
+    owner = deque;       //because the iterator class is nested, a pointer to the deque must be passed
+}
+
+template <class T>
+typename Deque<T>::const_Iterator Deque<T>::const_Iterator::operator+(int value)
+{
+//plus overload, used to shift to a data pointer by "value" places.
+    itr_index += value;             //increases the index by the rhs
+    if(itr_index > owner->size()) //checks to make sure data outside the deque isnt accessed
+    {
+        std::cout << "Iterator index too high, not changing anything\n";
+        return *this;
+    }
+    int key = owner->get_first_map_index()*chunkCapacity+itr_index+owner->get_empty_left();  //using the at() formula to calculate where the data is                //this formula calculates the requested data
+    itr_data = reinterpret_cast<T**>(owner->get_map())[key/chunkCapacity]+key%chunkCapacity; //updates the pointer to the new index value
+    return *this;                                                                            //returns the iterator
+}
+
+template <class T>
+typename Deque<T>::const_Iterator Deque<T>::const_Iterator::operator-(int value)
+{
+    if((int)itr_index-value < 0)     //after casting itr_index to an int, if the difference is negative
+    {
+        std::cout << std::cout << "Iterator index too low, not changing anything\n";
+        return *this;                //dont do anything
+    }
+    return *this + (-value);         //let operator+ do the work with the negative of value
+}
+///******
