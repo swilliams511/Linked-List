@@ -2,17 +2,15 @@
 
 
 Data::Data()
+: value(0), name("")
 {
     //std::cout << "Data's constructor called\n";
-    value = 0;
-    name = "";
 }
 
 Data::Data(int v, std::string n)
+: value(v), name(n)
 {
     std::cout << "Data's para constructor called\n";
-    value = v;
-    name = n;
 }
 
 Data::~Data()
@@ -21,20 +19,16 @@ Data::~Data()
 }
 
 Data::Data(const Data& otherData)
+: value(otherData.value), name(otherData.name)
+
 {
     std::cout << "Data's copy constructor called\n";
-    //sets the data to whatever is passed in
-    value = otherData.value;
-    name = otherData.name;
 }
 
 Data::Data(Data&& otherData)
+: value(std::move(otherData.value)), name(std::move(otherData.name))
 {
     std::cout << "Data's move constructor\n";
-    value = otherData.value;
-    name = otherData.name;
-    otherData.name = "";
-    otherData.value = 0;
 }
 
 void Data::swap(Data& otherData)
@@ -53,10 +47,8 @@ Data& Data::operator=(const Data& otherData)
 Data& Data::operator=(Data&& otherData)
 {
     std::cout << "Data's move assignment\n";
-    value = otherData.value;
-    name = otherData.name;
-    otherData.value = 0;
-    otherData.name = "";
+    value = std::move(otherData.value);
+    name = std::move(otherData.name);
     return *this;
 }
 

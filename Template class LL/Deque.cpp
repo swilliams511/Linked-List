@@ -14,9 +14,9 @@ check "Deque - copy" for first implementation attempt (overall more expensive)
 
 template <class T>
 Deque<T>::Deque()
+: map(new char* [mapCapacity]), mapCapacity(startMapCapacity), numElements(0)
 {
-    mapCapacity = startMapCapacity;                   //set the initial map capacity
-    map = new char* [mapCapacity];                    //create a map which holds pointers
+    //set the initial map capacity and create a map which holds pointers
     for(size_t i = 0; i < mapCapacity; ++i)           //for each of these pointers
         map[i] = new char[sizeof(T) * chunkCapacity]; //let them point to a fixed size chunk which holds individual data elements
     numElements = 0;                                  //the deque starts out empty
@@ -35,17 +35,13 @@ Deque<T>::~Deque()
 
 template <class T>
 Deque<T>::Deque(const Deque& otherDeque)
+: map(new char* [mapCapacity]), mapCapacity(otherDeque.mapCapacity), numElements(0),
+first_map_index(otherDeque.first_map_index), last_map_index(otherDeque.last_map_index),
+empty_left(otherDeque.empty_left), empty_right(otherDeque.empty_right)
 {
-    mapCapacity = otherDeque.mapCapacity;
-    numElements = 0;                                  //the deque starts out empty
-    map = new char* [mapCapacity];                    //create a map which holds pointers
+    //copy all the index based variables from other and initialize a map to hold pointers
     for(size_t i = 0; i < mapCapacity; ++i)           //for each of these pointers
         map[i] = new char[sizeof(T) * chunkCapacity]; //let them point to a fixed size chunk which holds individual data elements
-    //copy all the index based variables from other
-    first_map_index = otherDeque.first_map_index;
-    last_map_index = otherDeque.last_map_index;
-    empty_left = otherDeque.empty_left;
-    empty_right = otherDeque.empty_right;
     for(size_t i = 0; i < otherDeque.numElements; ++i)
     { //in order to create an "identical" deque, each element from other is copied using the "at()" formula to decide where to call placement new
       //trying to use push_back made this complicated, but this solution gets the job done
@@ -82,7 +78,7 @@ T& Deque<T>::at(const size_t index) const
 }
 
 template <class T>
-T& Deque<T>::operator[](const size_t index)
+T& Deque<T>::operator[](const size_t index) const
 {
     int key = first_map_index*chunkCapacity+index+empty_left;                //this formula calculates the requested data
     return reinterpret_cast<T**>(map)[key/chunkCapacity][key%chunkCapacity]; //change the map pointer to a T pointer
@@ -227,6 +223,78 @@ void Deque<T>::pop_front()
 }
 
 template <class T>
+typename Deque<T>::const_Iterator Deque<T>::cbegin() const
+{
+    int index = 0;
+    int key = first_map_index*chunkCapacity+index+empty_left;                //this formula calculates the requested data
+    return const_Iterator(reinterpret_cast<T**>(map)[key/chunkCapacity]+key%chunkCapacity,index,this); //change the map pointer to a T pointer
+}
+
+
+
+
+
+template <class T>
+void Deque<T>::insert(size_t index, T&& data)
+{
+    if(index == 0)
+        return push_front(std::move(data));
+    if(index == numElements)
+        return push_back(std::move(data));
+    if(index > numElements-index)
+    {
+        //std::cout << "closer to back\n";
+        push_back(std::move(data));                   //insert the data at the back
+        for(size_t i = numElements-1; i > index; --i) //i will get to 1 at the lowest because of previous checks
+            std::swap(at(i),at(i-1));                 //swap it from the back into the given index
+        return;
+    }
+    //std::cout << "closer to front\n";
+    push_front(std::move(data));                      //insert the data at the front
+    for(size_t i = 0; i < index; ++i)
+        std::swap(at(i),at(i+1));                     //swap it from the front into the given index
+}
+
+template <class T>
+void Deque<T>::insert(size_t index, const T& data)
+{
+    if(index == 0)
+        return push_front(data);
+    if(index == numElements)
+        return push_back(data);
+    if(index > numElements-index)
+    {
+        //std::cout << "closer to back\n";
+        push_back(data);                              //insert the data at the back
+        for(size_t i = numElements-1; i > index; --i) //i will get to 1 at the lowest because of previous checks
+            std::swap(at(i),at(i-1));                 //swap it from the back into the given index
+        return;
+    }
+    //std::cout << "closer to front\n";
+    push_front(data);                                 //insert the data at the front
+    for(size_t i = 0; i < index; ++i)
+        std::swap(at(i),at(i+1));                     //swap it from the front into the given index
+}
+
+template <class T>
+void Deque<T>::erase(size_t index)
+{
+    if(index == 0)
+        return pop_front();
+    if(index == numElements-1)
+        return pop_back();
+    if(index > numElements-1-index)   //checks which end of the deque the index is closer to
+    {
+        for(size_t i = index; i < numElements-1; ++i)
+            std::swap(at(i),at(i+1)); //swap the index data to the back of the deque
+        return pop_back();            //pop back to remove it
+    }
+    for(size_t i = index; i > 0; --i)
+        std::swap(at(i),at(i-1));     //swap the index data to the front of the deque
+    return pop_front();               //pop front to remove it
+}
+
+template <class T>
 void Deque<T>::clear()
 {
     while(!empty())
@@ -301,11 +369,11 @@ typename Deque<T>::Iterator Deque<T>::begin()
 }
 
 template <class T>
-typename Deque<T>::const_Iterator Deque<T>::const_begin() const
+typename Deque<T>::Iterator Deque<T>::rbegin()
 {
-    int index = 0;
+    int index = numElements-1;
     int key = first_map_index*chunkCapacity+index+empty_left;                //this formula calculates the requested data
-    return const_Iterator(reinterpret_cast<T**>(map)[key/chunkCapacity]+key%chunkCapacity,index,this); //change the map pointer to a T pointer
+    return Iterator(reinterpret_cast<T**>(map)[key/chunkCapacity]+key%chunkCapacity,index,this); //change the map pointer to a T pointer
 }
 
 template <class T>
@@ -316,8 +384,13 @@ typename Deque<T>::Iterator Deque<T>::end()
     return Iterator(reinterpret_cast<T**>(map)[key/chunkCapacity]+key%chunkCapacity,index,this); //change the map pointer to a T pointer
 }
 
-
-
+template <class T>
+typename Deque<T>::Iterator Deque<T>::rend()
+{ //c++ standard says this should return an iterator to the before-the-first element in the container
+    int index = -1; //before-the-first element (dont dereference otherwise undefined behavior)
+    int key = first_map_index*chunkCapacity+index+empty_left;                //this formula calculates the requested data
+    return Iterator(reinterpret_cast<T**>(map)[key/chunkCapacity]+key%chunkCapacity,index,this); //change the map pointer to a T pointer
+}
 
 
 
@@ -326,17 +399,15 @@ typename Deque<T>::Iterator Deque<T>::end()
 ///******Iterator function implementations******
 template <class T>
 Deque<T>::Iterator::Iterator(T* data, size_t index, Deque* deque)
+: owner(deque),itr_data(data), itr_index(index)
 {
-//creates a starting iterator based on the passed data pointer (should be begin() or end() pointer)
-    itr_data = data;     //holds the pointer to the data
-    itr_index = index;   //used for calculations and keeping track of where in the deque we are
-    owner = deque;       //because the iterator class is nested, a pointer to the deque must be passed
+    //creates a starting iterator based on the passed data pointer (should be begin() or end() pointer)
 }
 
 
 
 template <class T>
-typename Deque<T>::Iterator Deque<T>::Iterator::operator+(int value)
+typename Deque<T>::Iterator Deque<T>::Iterator::operator+(int value) const
 {
     Iterator temp = *this;
     temp.itr_index += value;
@@ -351,7 +422,7 @@ typename Deque<T>::Iterator Deque<T>::Iterator::operator+(int value)
 }
 
 template <class T>
-typename Deque<T>::Iterator Deque<T>::Iterator::operator-(int value)
+typename Deque<T>::Iterator Deque<T>::Iterator::operator-(int value) const
 {
     if((int)itr_index-value < 0)     //after casting itr_index to an int, if the difference is negative
     {
@@ -364,7 +435,7 @@ typename Deque<T>::Iterator Deque<T>::Iterator::operator-(int value)
 template <class T>
 typename Deque<T>::Iterator Deque<T>::Iterator::operator+=(int value)
 {
-//plus overload, used to shift to a data pointer by "value" places.
+//plus equals overload, used to shift to a data pointer by "value" places.
     itr_index += value;             //increases the index by the rhs
     if(itr_index > owner->size()) //checks to make sure data outside the deque isnt accessed
     {
@@ -379,12 +450,13 @@ typename Deque<T>::Iterator Deque<T>::Iterator::operator+=(int value)
 template <class T>
 typename Deque<T>::Iterator Deque<T>::Iterator::operator-=(int value)
 {
-    if((int)itr_index-value < 0)     //after casting itr_index to an int, if the difference is negative
-    {
-        std::cout << std::cout << "Iterator index too low, not changing anything\n";
-        return *this;                //dont do anything
+    if(itr_index == 0)          //if we are at the 0th index
+    {                           //set the pointer to the before-the-first element in the deque, which is at(0) - 1
+        int key = owner->get_first_map_index()*chunkCapacity+owner->get_empty_left();
+        itr_data = reinterpret_cast<T**>(owner->get_map())[key/chunkCapacity]+key%chunkCapacity-1;
+        return *this;           //return the before-the-first pointer
     }
-    return *this += (-value);         //let operator+ do the work with the negative of value
+    return *this += (-value);   //let operator+ do the work with the negative of value
 }
 
 template <class T>
@@ -438,11 +510,9 @@ bool Deque<T>::Iterator::operator!=(const Iterator& otherIterator) const
 ///be modified
 template <class T>
 Deque<T>::const_Iterator::const_Iterator(T* data, size_t index, const Deque* deque)
+: owner(deque),itr_data(data), itr_index(index)
 {
-//creates a starting iterator based on the passed data pointer (should be begin() or end() pointer)
-    itr_data = data;     //holds the pointer to the data
-    itr_index = index;   //used for calculations and keeping track of where in the deque we are
-    owner = deque;       //because the iterator class is nested, a pointer to the deque must be passed
+    //creates a starting iterator based on the passed data pointer (should be begin() or end() pointer)
 }
 
 template <class T>

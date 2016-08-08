@@ -23,8 +23,8 @@ public:
         //Iterator operator=(Iterator otherIterator);
         T* operator->() const {return itr_data;}
         T& operator*() const {return *itr_data;}
-        Iterator operator+(int value);
-        Iterator operator-(int value);
+        Iterator operator+(int value) const;
+        Iterator operator-(int value) const;
         Iterator operator+=(int value);
         Iterator operator-=(int value);
         Iterator operator++();
@@ -36,9 +36,9 @@ public:
 
 
     private:
-        Deque* owner;
-        T* itr_data;
-        size_t itr_index;
+        Deque* owner;     //because the iterator class is nested, a pointer to the deque must be passed
+        T* itr_data;      //holds the pointer to the data
+        size_t itr_index; //used for calculations and keeping track of where in the deque we are
 
     };
 
@@ -60,9 +60,9 @@ public:
         bool operator!=(const const_Iterator& otherIterator) const;
 
     private:
-        const Deque* owner;
-        const T* itr_data;
-        size_t itr_index;
+        const Deque* owner;   //because the iterator class is nested, a pointer to the deque must be passed
+        const T* itr_data;    //holds the pointer to the data
+        size_t itr_index;     //used for calculations and keeping track of where in the deque we are
 
     };
 
@@ -72,24 +72,33 @@ public:
     Deque(const Deque& otherDeque);
     Deque& operator=(Deque otherDeque);
 
-    T& operator[](const size_t index);   //access the kth element of a vector. RANGE: [0,size()-1]
-    const T& operator[](const size_t index) const;
-    T& at(size_t index) const;           //if using a pointer, use this    RANGE: [0,size()-1]
-    size_t size() const;
-    bool empty() const;
 
-    void push_back(const T& data);      //copy-based function to put new data at the back
-    void push_back(T&& data);           //move-based function to put new data at the back
-    void push_front(const T& data);     //copy-based function to put new data at the front
-    void push_front(T&& data);          //move-based function to put new data at the front
+    T& operator[](const size_t index) const; //access the kth element of the deque. RANGE: [0,size()-1]
+    T& at(size_t index) const;               //if using a pointer, use this    RANGE: [0,size()-1]
+    size_t size() const;                     //returns the number of elements in the deque
+    bool empty() const;                      //returns true if there are no elements in the deque
 
-    void pop_back();
-    void pop_front();
-    void clear();
+    void push_back(const T& data);      //copy-based function to put new data at the back of the deque
+    void push_back(T&& data);           //move-based function to put new data at the back of the deque
+    void push_front(const T& data);     //copy-based function to put new data at the front of the deque
+    void push_front(T&& data);          //move-based function to put new data at the front of the deque
 
-    Iterator begin();
-    const_Iterator const_begin() const;
-    Iterator end();
+    //inserts data at given index (doesn't use iterators). Prereq: index is between 0 and size() inclusive
+    void insert(size_t index, const T& data);
+    void insert(size_t index, T&& data);
+    //removes data at given index (doesn't use iterators). Prereq: index is between 0 and size()-1 inclusive
+    void erase(size_t index);
+
+    void pop_back();                    //removes the last element from the deque. Does nothing if the deque is empty
+    void pop_front();                   //removes the first element from the deque. Does nothing if the deque is empty
+    void clear();                       //removes all elements from the deque. Does nothing if the deque is empty
+
+    Iterator begin();                   //precondition: The deque isn't empty. Returns an iterator (pointer) to the first element in the deque
+    Iterator end();                     //precondition: The deque isn't empty. Returns an iterator (pointer) to the after last element (undefined memory)
+    Iterator rbegin();
+    Iterator rend();
+
+    const_Iterator cbegin() const;      //same as above, but the elements are const and can't be modified
 
 
     void print() const;

@@ -20,7 +20,7 @@
 1466127101 source:c:\users\scott williams\desktop\linked list\template class ll\node.cpp
 	"Node.hpp"
 
-1468470064 source:c:\users\scott williams\desktop\linked list\template class ll\data.cpp
+1469743371 source:c:\users\scott williams\desktop\linked list\template class ll\data.cpp
 	"Data.hpp"
 
 1467436938 c:\users\scott williams\desktop\linked list\template class ll\data.hpp
@@ -62,7 +62,7 @@
 	<string>
 	<vector>
 
-1469311379 source:c:\users\scott williams\desktop\linked list\template class ll\main3.cpp
+1470627901 source:c:\users\scott williams\desktop\linked list\template class ll\main3.cpp
 	"Node.hpp"
 	"Node.cpp"
 	"Data.hpp"
@@ -77,13 +77,13 @@
 	<iostream>
 	<string>
 
-1469311632 c:\users\scott williams\desktop\linked list\template class ll\deque.hpp
+1470627527 c:\users\scott williams\desktop\linked list\template class ll\deque.hpp
 	<iostream>
 
-1469311447 c:\users\scott williams\desktop\linked list\template class ll\deque.cpp
+1470628279 c:\users\scott williams\desktop\linked list\template class ll\deque.cpp
 	"Deque.hpp"
 
-1469311616 source:c:\users\scott williams\desktop\linked list\template class ll\deque.cpp
+1470627853 source:c:\users\scott williams\desktop\linked list\template class ll\deque.cpp
 	"Deque.hpp"
 
 1468351131 c:\users\scott williams\desktop\linked list\template class ll\array.hpp

@@ -92,6 +92,16 @@ int main()
         it->print();
     dq2.print();
 
+    for(Deque<Data>::Iterator it = dq2.rbegin(); it != dq2.rend(); --it)
+        it->print();
+
+    dq2.insert(1,Data(69,"lol wut"));
+    dq2.insert(19,Data(124,"Mr mime"));
+
+    dq2.print();
+    dq2.erase(19);
+    dq2.erase(1);
+    dq2.print();
 
     return 0;
 }
